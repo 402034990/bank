@@ -1,0 +1,127 @@
+package com.teamfirst.manager.services.impl;
+
+import java.util.Date;
+import java.util.List;
+
+import com.teamfirst.entity.Ticket;
+import com.teamfirst.entity.TicketVO;
+import com.teamfirst.entity.Ticket_Caller_Business_VO;
+import com.teamfirst.entity.Ticket_TakeDate_VO;
+import com.teamfirst.manager.services.TicketService;
+import com.teamfirst.server.dao.TicketDAO;
+import com.teamfirst.server.dao.impl.TicketDAOImplJDBC;
+
+public class TicketServiceImplJDBC implements TicketService {
+	private TicketDAO ticketDAO = null;
+
+	public TicketServiceImplJDBC() {
+		this.ticketDAO = new TicketDAOImplJDBC();
+		// TODO 自动生成的构造函数存根
+	}
+
+	@Override
+	public int insertTicket(Ticket ticket) {
+		if (ticket == null) {
+			return 0;
+		}
+		int row = this.ticketDAO.insertTicket(ticket);
+		return row;
+	}
+
+	@Override
+	public int updateById(Ticket ticket) {
+		if (ticket == null) {
+			return 0;
+		}
+		int row = this.ticketDAO.updateById(ticket);
+		return row;
+	}
+
+	@Override
+	public Ticket queryByDate(Date date) {
+		if (date == null) {
+			return null;
+		}
+		Ticket ticket = this.ticketDAO.queryByDate(date);
+		return ticket;
+	}
+
+	@Override
+	public Ticket queryById(int id) {
+		if (id < 0) {
+			return null;
+		}
+		Ticket ticket = this.ticketDAO.queryById(id);
+		return ticket;
+	}
+
+	@Override
+	public Ticket queryByBusinessId(int businessId) {
+		if (businessId < 0) {
+			return null;
+		}
+		Ticket ticket = this.ticketDAO.queryByBusinessId(businessId);
+		return ticket;
+	}
+
+	@Override
+	public List<Ticket> queryAll() {
+		List<Ticket> tickets = this.ticketDAO.queryAll();
+		return tickets;
+	}
+
+	@Override
+	public List<Ticket> queryTicketsByBusinessId(int id) {
+		// TODO Auto-generated method stub
+		return this.ticketDAO.queryTicketsByBusinessId(id);
+	}
+
+	@Override
+	public List<TicketVO> queryLogByTicketVO() {
+
+		return this.ticketDAO.queryLogByTicketVO();
+	}
+
+	@Override
+	public List<Ticket_Caller_Business_VO> queryDataByTicket_Caller_Business_VO() {
+
+		return this.ticketDAO.queryDataByTicket_Caller_Business_VO();
+	}
+
+	@Override
+	public List<Ticket_TakeDate_VO> queryDataByTicket_Caller_Business_VO1() {
+
+		return this.ticketDAO.queryDataByTicket_Caller_Business_VO1();
+	}
+
+	@Override
+	public List<Ticket_Caller_Business_VO> queryDataByTicket_Caller_Business_VO2() {
+
+		return this.ticketDAO.queryDataByTicket_Caller_Business_VO2();
+	}
+
+	@Override
+	public List<TicketVO> queryDataByTicketVO() {
+
+		return this.ticketDAO.queryDataByTicketVO();
+	}
+
+	@Override
+	public List<TicketVO> queryCheckByTicketVO() {
+
+		return this.ticketDAO.queryCheckByTicketVO();
+	}
+
+	@Override
+	public Ticket queryByWaitCount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<TicketVO> querySuccessByTicketVO(int success) {
+
+		return this.ticketDAO.querySuccessByTicketVO(success);
+	}
+
+}

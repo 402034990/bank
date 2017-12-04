@@ -1,0 +1,174 @@
+package com.taketicket.manager.ui;
+
+import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+
+import com.taketicket.constant.Flavor;
+import com.taketicket.entity.Manager;
+import com.taketicket.manager.services.ManagerService;
+import com.taketicket.manager.services.impl.ManagerServiceImplJDBC;
+import com.taketicket.util.ui.MyClock;
+
+public class Login extends JFrame {
+
+	private final JPanel contentPane;
+	private final JTextField usernameField;
+	private final JPasswordField passwordField;
+	private JFrame mainFrame;
+
+	private final JLabel picLabel;
+	private final JLabel picLabel_user;
+
+	public JLabel getPicLabel() {
+		return this.picLabel;
+	}
+
+	public JLabel getPicLabel_user() {
+		return this.picLabel_user;
+	}
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Login frame = new Login();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Login() {
+
+		try {
+			UIManager.setLookAndFeel(Flavor.FLAVOR_PATH);
+		} catch (Exception e1) {
+			System.out.println("change flavor fail");
+		}
+
+		this.setTitle("\u7BA1\u7406\u5458\u767B\u5F55");
+		this.setResizable(false);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setBounds(100, 100, 450, 339);
+		this.contentPane = new JPanel();
+		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		this.setContentPane(this.contentPane);
+		this.contentPane.setLayout(null);
+
+		JLayeredPane layeredPane = new JLayeredPane();
+		layeredPane.setBounds(0, 0, 444, 311);
+		this.contentPane.add(layeredPane);
+
+		this.usernameField = new JTextField();
+		this.usernameField.setBounds(177, 120, 192, 30);
+		layeredPane.add(this.usernameField);
+		this.usernameField.setColumns(10);
+
+		this.passwordField = new JPasswordField();
+		this.passwordField.setBounds(177, 160, 192, 30);
+		layeredPane.add(this.passwordField);
+
+		JButton button = new JButton("\u767B\u5F55");
+		button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Login.this.buttonActionPerformed(e);
+			}
+
+		});
+		button.setBounds(135, 225, 164, 41);
+		layeredPane.add(button);
+
+		this.picLabel_user = new JLabel("");
+		this.picLabel_user.setIcon(new ImageIcon(Login.class
+				.getResource(Flavor.USER_ICON_PATH)));
+		this.picLabel_user.setBounds(60, 96, 100, 94);
+		layeredPane.add(this.picLabel_user);
+
+		JLabel clockLabel = new JLabel(MyClock.getDateTime());
+		MyClock.showTimeAtLabel(clockLabel);
+
+		clockLabel.setBounds(10, 10, 180, 23);
+		layeredPane.add(clockLabel);
+
+		this.picLabel = new JLabel("");
+		this.picLabel.setIcon(new ImageIcon(Login.class
+				.getResource(Flavor.BACKGROUND_ICON_PATH)));
+		this.picLabel.setBounds(0, 0, 444, 311);
+		layeredPane.add(this.picLabel);
+
+		this.setLocationRelativeTo(null);// 窗口在屏幕中间显示
+	}
+
+	private void buttonActionPerformed(ActionEvent e) {
+		// String username = "root";
+		// String password = "root";
+		if (this.usernameField.getText().isEmpty()
+				|| this.passwordField.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "账号或密码不能为空", "错误提示",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		ManagerService managerService = new ManagerServiceImplJDBC();
+		Manager manager = managerService.queryByAccount(this.usernameField
+				.getText());
+		if (manager == null) {
+			JOptionPane.showMessageDialog(null, "您输入的账号名错误", "错误提示",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		String password = manager.getPassword();
+
+		if (!password.equals(this.passwordField.getText())) {
+			JOptionPane.showMessageDialog(null, "您输入的密码错误", "错误提示",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		if (this.mainFrame == null) {
+			System.out.println("创建MainFrame对象");
+			this.mainFrame = new MainFrame(this);
+		}
+
+		this.usernameField.setText("");
+		this.passwordField.setText("");
+		this.mainFrame.setVisible(true);
+		this.setVisible(false);
+		this.dispose();
+
+	}
+
+	public void updateFlavor() {
+		try {
+			UIManager.setLookAndFeel(Flavor.FLAVOR_PATH);
+		} catch (Exception e1) {
+			System.out.println("change flavor fail");
+		}
+		SwingUtilities.updateComponentTreeUI(this.getContentPane());
+	}
+}

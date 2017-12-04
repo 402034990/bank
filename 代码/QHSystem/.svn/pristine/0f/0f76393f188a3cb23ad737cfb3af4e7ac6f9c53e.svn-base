@@ -1,0 +1,79 @@
+package com.teamfirst.manager.services.impl;
+
+import java.util.List;
+
+import com.teamfirst.entity.Business;
+import com.teamfirst.manager.services.BusinessService;
+import com.teamfirst.server.dao.BusinessDAO;
+import com.teamfirst.server.dao.impl.BusinessDAOImplJDBC;
+
+public class BusinessServiceImplJDBC implements BusinessService {
+
+	private BusinessDAO businessDAO = null;
+
+	public BusinessServiceImplJDBC() {
+		this.businessDAO = new BusinessDAOImplJDBC();
+	}
+
+	@Override
+	public int insertBusiness(Business business) {
+		if (business == null) {
+			return 0;
+		}
+		int rows = this.businessDAO.insertBusiness(business);
+		return rows;
+	}
+
+	@Override
+	public int updateBusinessByCode(Business business) {
+		if (business == null) {
+			return 0;
+		}
+		int row = this.businessDAO.updateDisabledByCode(business);
+		return row;
+	}
+
+	@Override
+	public int updateBusinessByName(Business business) {
+		if (business == null) {
+			return 0;
+		}
+		int row = this.businessDAO.updateDisabledByName(business);
+		return row;
+	}
+
+	@Override
+	public int updateBusinessById(Business business) {
+		if (business == null) {
+			return 0;
+		}
+		int row = this.businessDAO.updateBusinessById(business);
+		return row;
+	}
+
+	@Override
+	public Business queryByCode(String code) {
+		if (code == null || code.trim().length() == 0) {
+			return null;
+		}
+		Business b = this.businessDAO.queryByCode(code);
+		return b;
+	}
+
+	@Override
+	public Business queryByName(String name) {
+		if (name == null || name.trim().length() == 0) {
+			return null;
+		}
+		Business b = this.businessDAO.queryByName(name);
+		return b;
+	}
+
+	@Override
+	public List<Business> queryAll() {
+
+		List<Business> list = this.businessDAO.queryAll();
+		return list;
+	}
+
+}

@@ -1,0 +1,64 @@
+package com.taketicket.server.services.impl;
+
+import java.util.List;
+
+import com.taketicket.entity.Caller;
+import com.taketicket.server.services.CallerService;
+
+public class CallerServiceImpl implements CallerService {
+
+	@Override
+	public int insertCaller(Caller caller) {
+
+		return 0;
+	}
+
+	@Override
+	public int deleteCallerByAccount(String account) {
+
+		return 0;
+	}
+
+	@Override
+	public int deleteCallerByName(String name) {
+
+		return 0;
+	}
+
+	@Override
+	public int updatePasswordByAccount(Caller caller) {
+
+		return 0;
+	}
+
+	@Override
+	public Caller queryByAccount(String account) {
+
+		return null;
+	}
+
+	@Override
+	public List<Caller> queryByName(String name) {
+
+		return null;
+	}
+
+	@Override
+	public List<Caller> queryAll() {
+
+		return null;
+	}
+
+	@Override
+	public int updateDisabledByAccount(Caller caller) {
+
+		return 0;
+	}
+	// public boolean login(Caller caller) {
+	// if (caller.getName().equals("root")
+	// && caller.getPassword().equals("root")) {
+	// return true;
+	// }
+	// return false;
+	// }
+}

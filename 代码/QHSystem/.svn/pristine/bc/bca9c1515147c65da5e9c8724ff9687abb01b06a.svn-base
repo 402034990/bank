@@ -1,0 +1,13 @@
+package com.teamfirst.server.services.impl;
+
+import com.teamfirst.entity.Caller;
+
+public class CallerService {
+	public boolean login(Caller caller) {
+		if (caller.getName().equals("root")
+				&& caller.getPassword().equals("root")) {
+			return true;
+		}
+		return false;
+	}
+}

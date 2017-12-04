@@ -1,0 +1,18 @@
+package impl.com.teamfirst.server.dao.impl;
+
+import com.teamfirst.server.dao.impl.ManagerDAOImplJDBC;
+
+public class TestManagerDaoImplJDBC {
+
+	private static ManagerDAOImplJDBC managerDaoImplJDBC = new ManagerDAOImplJDBC();
+
+	public static void main(String[] args) {
+		TestManagerDaoImplJDBC.queryByAccountTest();
+	}
+
+	public static void queryByAccountTest() {
+		// 增加测试的代码
+		TestManagerDaoImplJDBC.managerDaoImplJDBC.queryByAccount(null);
+	}
+
+}

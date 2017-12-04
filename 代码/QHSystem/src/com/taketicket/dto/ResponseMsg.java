@@ -1,0 +1,26 @@
+package com.taketicket.dto;
+
+import java.io.Serializable;
+
+public class ResponseMsg<T> implements Serializable {
+
+	private int response;
+	private T obj;
+
+	public int getResponse() {
+		return this.response;
+	}
+
+	public void setResponse(int response) {
+		this.response = response;
+	}
+
+	public T getObj() {
+		return this.obj;
+	}
+
+	public void setObj(T obj) {
+		this.obj = obj;
+	}
+
+}

@@ -1,0 +1,463 @@
+package com.teamfirst.manager.ui;
+
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
+
+import com.teamfirst.constant.Flavor;
+import com.teamfirst.entity.TicketVO;
+import com.teamfirst.entity.Ticket_Caller_Business_VO;
+import com.teamfirst.manager.services.TicketService;
+import com.teamfirst.manager.services.impl.TicketServiceImplJDBC;
+import com.teamfirst.util.ui.MyClock;
+
+public class MainFrame extends JFrame {
+
+	private final JPanel contentPane;
+	private JFrame login;
+	private JFrame userManage;
+	private JFrame businessManagement;
+	private JFrame windowManage;
+	private JFrame checkForSituation;
+	private JFrame data;
+	private TheLog theLog;
+	private JFrame selectFlavorFrame;
+
+	private final JLabel picLabelabel;
+	private final JButton logOutButton;
+	private boolean isFirst = true;
+	private boolean isFirst1 = true;
+
+	public JLabel getPicJLabel() {
+		return this.picLabelabel;
+	}
+
+	public JButton getLogOutButton() {
+		return this.logOutButton;
+	}
+
+	/**
+	 * Launch the application.
+	 */
+	// public static void main(String[] args) {
+	// EventQueue.invokeLater(new Runnable() {
+	// @Override
+	// public void run() {
+	// try {
+	// UIManager
+	// .setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+	// MainFrame frame = new MainFrame();
+	// frame.setVisible(true);
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// });
+	// }
+
+	public JFrame getLogin() {
+		return this.login;
+	}
+
+	public JFrame getUserManage() {
+		return this.userManage;
+	}
+
+	public JFrame getBusinessManagement() {
+		return this.businessManagement;
+	}
+
+	public JFrame getWindowManage() {
+		return this.windowManage;
+	}
+
+	public JFrame getCheckForSituation() {
+		return this.checkForSituation;
+	}
+
+	public JFrame getData() {
+		return this.data;
+	}
+
+	public JFrame getTheLog() {
+		return this.theLog;
+	}
+
+	public JFrame getSelectFlavorFrame() {
+		return this.selectFlavorFrame;
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public MainFrame(JFrame login) {
+		this.setTitle("\u7BA1\u7406\u754C\u9762");
+
+		try {
+			UIManager.setLookAndFeel(Flavor.FLAVOR_PATH);
+		} catch (Exception e1) {
+			System.out.println("change flavor fail");
+		}
+
+		this.login = login;
+		this.setResizable(false);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setBounds(100, 100, 600, 702);
+		this.contentPane = new JPanel();
+		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		this.setContentPane(this.contentPane);
+		this.contentPane.setLayout(null);
+
+		JLayeredPane layeredPane = new JLayeredPane();
+		layeredPane.setBounds(0, 0, 594, 674);
+		this.contentPane.add(layeredPane);
+
+		JButton btnNewButton = new JButton("\u7528\u6237\u7BA1\u7406");
+		btnNewButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainFrame.this.btnNewButtonActionPerformed(e);
+			}
+
+		});
+		btnNewButton.setBounds(227, 44, 123, 43);
+		layeredPane.add(btnNewButton);
+
+		JButton btnNewButton_1 = new JButton("\u4E1A\u52A1\u7BA1\u7406");
+		btnNewButton_1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainFrame.this.btnNewButton_1ActionPerformed(e);
+			}
+		});
+		btnNewButton_1.setBounds(227, 132, 123, 43);
+		layeredPane.add(btnNewButton_1);
+
+		JButton btnNewButton_2 = new JButton("\u7A97\u53E3\u7BA1\u7406");
+		btnNewButton_2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainFrame.this.btnNewButton_2ActionPerformed(e);
+			}
+		});
+		btnNewButton_2.setBounds(227, 217, 123, 43);
+		layeredPane.add(btnNewButton_2);
+
+		JButton btnNewButton_3 = new JButton(
+				"\u67E5\u770B\u529E\u7406\u60C5\u51B5");
+		btnNewButton_3.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainFrame.this.btnNewButton_3ActionPerformed(e);
+			}
+
+		});
+		btnNewButton_3.setBounds(227, 305, 123, 43);
+		layeredPane.add(btnNewButton_3);
+
+		JButton btnNewButton_4 = new JButton("\u6570\u636E\u7EDF\u8BA1");
+		btnNewButton_4.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainFrame.this.btnNewButton_4ActionPerformed(e);
+			}
+
+		});
+		btnNewButton_4.setBounds(227, 386, 123, 43);
+		layeredPane.add(btnNewButton_4);
+
+		JButton btnNewButton_5 = new JButton("\u65E5\u5FD7\u8BB0\u5F55");
+		btnNewButton_5.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainFrame.this.btnNewButton_5ActionPerformed(e);
+			}
+
+		});
+		btnNewButton_5.setBounds(227, 480, 123, 43);
+		layeredPane.add(btnNewButton_5);
+
+		this.logOutButton = new JButton("");
+		this.logOutButton.setIcon(new ImageIcon(MainFrame.class
+				.getResource(Flavor.CLOSE_ICON_PATH)));
+		this.logOutButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainFrame.this.btnNewButton_6ActionPerformed(e);
+			}
+
+		});
+		this.logOutButton.setBounds(518, 579, 66, 69);
+		layeredPane.add(this.logOutButton);
+
+		JButton selectFlavorButton = new JButton("\u6362\u80A4");
+		selectFlavorButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				MainFrame.this.selectFlavorButtonActionPerformed(e);
+			}
+		});
+		selectFlavorButton.setBounds(518, 480, 66, 33);
+		layeredPane.add(selectFlavorButton);
+
+		JLabel clockLabel = new JLabel(MyClock.getDateTime());// 添加时钟
+		clockLabel.setFont(new Font("宋体", Font.PLAIN, 15));
+		MyClock.showTimeAtLabel(clockLabel);
+
+		clockLabel.setBounds(10, 10, 236, 33);
+		layeredPane.add(clockLabel);
+
+		this.picLabelabel = new JLabel("");
+		this.picLabelabel.setIcon(new ImageIcon(MainFrame.class
+				.getResource("/resource/images/background/5.jpg")));
+		this.picLabelabel.setBounds(0, 0, 594, 674);
+		layeredPane.add(this.picLabelabel);
+
+		this.setLocationRelativeTo(null);// 窗口在屏幕中间显示
+		// this.data = new Data(this);
+	}
+
+	private void btnNewButton_2ActionPerformed(ActionEvent e) {
+		if (this.windowManage == null) {
+			System.out.println("创建windowManagement对象");
+			this.windowManage = new WindowManage(this);
+		}
+		this.windowManage.setVisible(true);
+		this.setVisible(false);
+	}
+
+	private void btnNewButton_1ActionPerformed(ActionEvent e) {
+		if (this.businessManagement == null) {
+			System.out.println("创建businessManagement对象");
+			this.businessManagement = new BusinessManage(this);
+		}
+		this.businessManagement.setVisible(true);
+		this.setVisible(false);
+	}
+
+	private void btnNewButton_6ActionPerformed(ActionEvent e) {
+		if (this.login == null) {
+			System.out.println("创建login对象");
+			this.login = new Login();
+		}
+		this.login.setVisible(true);
+		this.setVisible(false);
+	}
+
+	private void btnNewButtonActionPerformed(ActionEvent e) {
+		if (this.userManage == null) {
+			System.out.println("创建UserManager对象");
+			this.userManage = new UserManage(this);
+		}
+		this.userManage.setVisible(true);
+		this.setVisible(false);
+	}
+
+	private void btnNewButton_3ActionPerformed(ActionEvent e) {
+		if (this.checkForSituation == null) {
+			System.out.println("创建checkForSituation对象");
+			this.checkForSituation = new CheckForSituation(this);
+		}
+
+		if (this.isFirst1) {
+			this.isFirst1 = false;
+
+			System.out.println("first1");
+
+			TicketService ticketService = new TicketServiceImplJDBC();
+
+			List<TicketVO> list = ticketService.queryCheckByTicketVO();
+
+			if (list == null || list.size() == 0) {
+				this.checkForSituation.setVisible(true);
+				this.setVisible(false);
+				JOptionPane.showMessageDialog(null, "暂无数据", "警告",
+						JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+
+			JTable table123 = ((CheckForSituation) this.checkForSituation)
+					.getTable_3();
+
+			DefaultTableModel tableModel = (DefaultTableModel) table123
+					.getModel();
+			tableModel.setRowCount(0);// 清除原有行
+
+			if (list.size() < 26) {
+				tableModel.setRowCount(26);
+			} else {
+				tableModel.setRowCount(list.size());
+			}
+
+			for (int i = 0; i < list.size(); i++) {
+
+				TicketVO vo = list.get(i);
+
+				table123.setValueAt(vo.getTicket_takeDate(), i, 0);
+				table123.setValueAt(vo.getBusiness_name(), i, 1);
+				// table123.setValueAt(vo.getWindow_num(), i, 2);
+				// table123.setValueAt(vo.getBusiness_name(), i, 3);
+				// table123.setValueAt(vo.getIsCalled(), i, 4);
+
+			}
+		}
+
+		this.checkForSituation.setVisible(true);
+		this.setVisible(false);
+	}
+
+	private void btnNewButton_4ActionPerformed(ActionEvent e) {
+		if (this.data == null) {
+			System.out.println("创建data对象");
+			this.data = new Data(this);
+		}
+
+		if (this.isFirst) {
+			this.isFirst = false;
+
+			System.out.println("first");
+
+			TicketService ticketService = new TicketServiceImplJDBC();
+			List<Ticket_Caller_Business_VO> list = ticketService
+					.queryDataByTicket_Caller_Business_VO();
+
+			if (list == null || list.size() == 0) {
+				this.data.setVisible(true);
+				this.setVisible(false);
+				JOptionPane.showMessageDialog(null, "暂无数据", "警告",
+						JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+
+			JTable table123 = ((Data) this.data).getTable_1();
+
+			DefaultTableModel tableModel = (DefaultTableModel) table123
+					.getModel();
+			tableModel.setRowCount(0);// 清除原有行
+
+			if (list.size() < 26) {
+				tableModel.setRowCount(26);
+			} else {
+				tableModel.setRowCount(list.size());
+			}
+
+			Map<Ticket_Caller_Business_VO, Integer> successhMap = new HashMap<Ticket_Caller_Business_VO, Integer>();
+			Map<Ticket_Caller_Business_VO, Integer> failedMap = new HashMap<Ticket_Caller_Business_VO, Integer>();
+
+			for (int i = 0; i < list.size(); i++) {
+
+				Ticket_Caller_Business_VO vo = list.get(i);
+
+				if (vo.getSuccess() == 1) {
+					if (successhMap.get(vo) == null) {
+						successhMap.put(vo, 1);
+					} else {
+						int count = successhMap.get(vo);
+						successhMap.put(vo, count + 1);
+					}
+				} else {
+					if (failedMap.get(vo) == null) {
+						failedMap.put(vo, 1);
+					} else {
+						int count = failedMap.get(vo);
+						failedMap.put(vo, count + 1);
+					}
+
+					// table123.setValueAt(vo.getIsCalled(), i, 4);
+
+				}
+
+			}
+
+			Set<Ticket_Caller_Business_VO> keySet = successhMap.keySet();
+			int i = 0;
+			for (Ticket_Caller_Business_VO key : keySet) {
+				table123.setValueAt(key.getCaller_name(), i, 0);
+				table123.setValueAt(key.getCaller_id(), i, 1);
+				table123.setValueAt(key.getWindow_num(), i, 2);
+				table123.setValueAt(key.getBusiness_name(), i, 3);
+				table123.setValueAt(successhMap.get(key) == null ? 0
+						: successhMap.get(key), i, 4);
+				table123.setValueAt(
+						failedMap.get(key) == null ? 0 : failedMap.get(key), i,
+						5);
+				i++;
+			}
+		}
+		this.data.setVisible(true);
+		this.setVisible(false);
+	}
+
+	private void btnNewButton_5ActionPerformed(ActionEvent e) {
+		if (this.theLog == null) {
+			System.out.println("创建theLog对象");
+			this.theLog = new TheLog(this);
+		}
+
+		TicketService ticketService = new TicketServiceImplJDBC();
+		List<TicketVO> list = ticketService.queryLogByTicketVO();
+		if (list == null || list.size() == 0) {
+			this.theLog.setVisible(true);
+			this.setVisible(false);
+			JOptionPane.showMessageDialog(null, "暂无数据", "警告",
+					JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+
+		JTable table = this.theLog.getTable_3();
+
+		DefaultTableModel tableModel = (DefaultTableModel) table.getModel();
+		tableModel.setRowCount(0);// 清除原有行
+
+		tableModel.setRowCount(list.size());
+
+		for (int i = 0; i < list.size(); i++) {
+
+			TicketVO vo = list.get(i);
+
+			table.setValueAt(vo.getTicket_takeDate(), i, 0);
+			table.setValueAt(vo.getTicket_takeIP(), i, 1);
+			table.setValueAt(vo.getCaller_name(), i, 2);
+			table.setValueAt(vo.getBusiness_name(), i, 3);
+			table.setValueAt(vo.getCount(), i, 4);
+		}
+
+		this.theLog.setVisible(true);
+		this.setVisible(false);
+	}
+
+	private void selectFlavorButtonActionPerformed(ActionEvent e) {
+		if (this.selectFlavorFrame == null) {
+			System.out.println("创建selectFlavorFrame对象");
+			this.selectFlavorFrame = new SelectFlavorFrame(this);
+		}
+		this.selectFlavorFrame.setVisible(true);
+		// this.setVisible(false);
+	}
+
+	public void updateFlavor() {
+		try {
+			UIManager.setLookAndFeel(Flavor.FLAVOR_PATH);
+		} catch (Exception e1) {
+			System.out.println("change flavor fail");
+		}
+		SwingUtilities.updateComponentTreeUI(this.getContentPane());
+	}
+}

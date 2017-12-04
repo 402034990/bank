@@ -1,0 +1,16 @@
+package com.teamfirst.util.jdbc;
+/**
+ * 存放都是请求常量
+ * @author Administrator
+ *
+ */
+public class Constans {
+	public static final String USER_LOGIN="user_login";
+	public static final String CALLER_GET_ALL = "caller_get_all";
+	public static final String RESULT_USER_LOGIN= "result_user_login";
+	public static final String MANAGER_LOGIN = "MANAGER_LOGIN";
+
+
+	public static int CLIENT_PORT=6666;
+	public static int SERVER_PORT=8888;
+}

@@ -1,0 +1,10 @@
+package com.teamfirst.constant;
+
+public class Flavor {
+
+	public static String FLAVOR_PATH = "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel";
+	public static String BACKGROUND_ICON_PATH = "/resource/images/background/5.jpg";
+	public static String USER_ICON_PATH = "/resource/images/user_icon/4.png";
+	public static String CLOSE_ICON_PATH = "/resource/images/window_icon/2.png";
+
+}

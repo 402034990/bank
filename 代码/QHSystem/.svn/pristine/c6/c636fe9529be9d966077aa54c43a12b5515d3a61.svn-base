@@ -1,0 +1,73 @@
+package com.teamfirst.callnum.services.impl;
+
+import java.util.List;
+
+import com.teamfirst.callnum.services.CallNumService;
+import com.teamfirst.entity.Ticket;
+import com.teamfirst.server.dao.TicketDAO;
+import com.teamfirst.server.dao.impl.TicketDAOImplJDBC;
+
+public class CallNumServiceImplJDBC implements CallNumService {
+
+	private TicketDAO ticketDAO = null;
+
+	public CallNumServiceImplJDBC() {
+		ticketDAO = new TicketDAOImplJDBC();
+	}
+
+	@Override
+	public int insertTicket(Ticket ticket) {
+		if (ticket == null) {
+			return 0;
+
+		} else {
+			return ticketDAO.insertTicket(ticket);
+
+		}
+
+	}
+
+	@Override
+	public int updateTicketById(Ticket ticket) {
+		if (ticket == null) {
+			return 0;
+		}
+		return ticketDAO.updateById(ticket);
+
+	}
+
+	@Override
+	public Ticket queryByBusinessId(int businessId) {
+		if (businessId == 0) {// 如果等待人数为0，返回空对象
+			return null;
+		}
+		// 等待人数不为0则把相关数据读入数据库
+		return ticketDAO.queryByBusinessId(businessId);
+	}
+
+	@Override
+	public List<Ticket> queryTicketAll() {
+		// TODO Auto-generated method stub
+		return ticketDAO.queryAll();
+	}
+
+	public List<Ticket> queryTicketAllByisCalled(int isCalled) {
+
+		return ticketDAO.queryAllByisCalled(isCalled);
+
+	}
+
+	public void updateTicketByid(int id) {
+		// TODO Auto-generated method stub
+		ticketDAO.updateByid(id);
+	}
+
+	public int updateTicketByID(Ticket ticket) {
+		if (ticket == null) {
+			return 0;
+		}
+		return ticketDAO.updateByID(ticket);
+
+	}
+
+}

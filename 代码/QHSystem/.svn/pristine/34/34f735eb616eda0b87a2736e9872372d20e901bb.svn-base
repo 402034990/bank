@@ -1,0 +1,67 @@
+package com.teamfirst.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class TicketVO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private Date ticket_takeDate;
+	private String ticket_takeIP;
+	private String caller_name;
+	private String business_name;
+	private int isCalled;
+	private int count;
+
+	public int getCount() {
+		return this.count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
+	public int getIsCalled() {
+		return this.isCalled;
+	}
+
+	public void setIsCalled(int isCalled) {
+		this.isCalled = isCalled;
+	}
+
+	public Date getTicket_takeDate() {
+		return this.ticket_takeDate;
+	}
+
+	public void setTicket_takeDate(Date ticket_takeDate) {
+		this.ticket_takeDate = ticket_takeDate;
+	}
+
+	public String getTicket_takeIP() {
+		return this.ticket_takeIP;
+	}
+
+	public void setTicket_takeIP(String ticket_takeIP) {
+		this.ticket_takeIP = ticket_takeIP;
+	}
+
+	public String getCaller_name() {
+		return this.caller_name;
+	}
+
+	public void setCaller_name(String caller_name) {
+		this.caller_name = caller_name;
+	}
+
+	public String getBusiness_name() {
+		return this.business_name;
+	}
+
+	public void setBusiness_name(String business_name) {
+		this.business_name = business_name;
+	}
+
+}

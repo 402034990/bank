@@ -1,0 +1,101 @@
+package com.teamfirst.manager.services.impl;
+
+import java.util.List;
+
+import com.teamfirst.entity.Manager;
+import com.teamfirst.manager.services.ManagerService;
+import com.teamfirst.server.dao.ManagerDAO;
+import com.teamfirst.server.dao.impl.ManagerDAOImplJDBC;
+
+public class ManagerServiceImplJDBC implements ManagerService {
+	private ManagerDAO managerDAO = null;
+
+	public ManagerServiceImplJDBC() {
+		// TODO 自动生成的构造函数存根
+		this.managerDAO = new ManagerDAOImplJDBC();
+	}
+
+	@Override
+	public int insertManager(Manager manager) {
+		if (manager == null) {
+			return 0;
+		}
+		int row = this.managerDAO.insertManager(manager);
+		return row;
+	}
+
+	@Override
+	public int deleteManagerByAccount(String account) {
+		if (account == null || account.trim().length() == 0) {
+			return 0;
+		}
+		int row = this.managerDAO.deleteManagerByAccount(account);
+		return row;
+	}
+
+	@Override
+	public int deleteManagerByName(String name) {
+		if (name == null || name.trim().length() == 0) {
+			return 0;
+		}
+		int row = this.managerDAO.deleteManagerByName(name);
+
+		return row;
+	}
+
+	@Override
+	public int updatePasswordByAccount(Manager manager) {
+		if (manager == null) {
+			return 0;
+		}
+		int row = this.managerDAO.updatePasswordByAccount(manager);
+		return row;
+	}
+
+	@Override
+	public Manager queryByAccount(String account) {
+		if (account == null || account.trim().length() == 0) {
+			return null;
+		}
+		Manager mana = this.managerDAO.queryByAccount(account);
+		return mana;
+	}
+
+	@Override
+	public Manager queryByName(String name) {
+		if (name == null || name.trim().length() == 0) {
+			return null;
+		}
+		Manager mana = this.managerDAO.queryByName(name);
+		return mana;
+	}
+
+	@Override
+	public List<Manager> queryAll() {
+
+		List<Manager> list = this.managerDAO.queryAll();
+		return list;
+	}
+
+	@Override
+	public int updateDisabledByAccount(Manager manager) {
+		// TODO 自动生成的方法存根
+		if (manager == null) {
+			return 0;
+		}
+		int row = this.managerDAO.updateDisabledByaccount(manager);
+		return row;
+
+	}
+
+	// public int updateDisableByAccount(Manager manager) {
+	// // TODO 自动生成的方法存根
+	// if (manager == null) {
+	// return 0;
+	// }
+	// int row = managerServiceImplJDBC.updateDisabledByaccount(manager);
+	// return row;
+	//
+	// }
+
+}

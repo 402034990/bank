@@ -1,0 +1,90 @@
+package com.teamfirst.manager.services.impl;
+
+import java.util.List;
+
+import com.teamfirst.entity.Caller;
+import com.teamfirst.manager.services.CallerService;
+import com.teamfirst.server.dao.CallerDAO;
+import com.teamfirst.server.dao.impl.CallerDAOImplJDBC;
+
+public class CallerServiceImplJDBC implements CallerService {
+	private CallerDAO callerDAO = null;
+
+	public CallerServiceImplJDBC() {
+		this.callerDAO = new CallerDAOImplJDBC();
+	}
+
+	@Override
+	public int insertCaller(Caller caller) {
+		if (caller == null) {
+			return 0;
+		}
+		int row = this.callerDAO.insertCaller(caller);
+		return row;
+	}
+
+	@Override
+	public int deleteCallerByAccount(String account) {
+		if (account == null || account.trim().length() == 0) {
+			return 0;
+		}
+		int row = this.callerDAO.deleteCallerByAccount(account);
+		return row;
+	}
+
+	@Override
+	public int deleteCallerByName(String name) {
+		if (name == null || name.trim().length() == 0) {
+			return 0;
+		}
+		int row = this.callerDAO.deleteCallerByName(name);
+		return row;
+	}
+
+	@Override
+	public int updatePasswordByAccount(Caller caller) {
+		if (caller == null) {
+			return 0;
+		}
+		int row = this.callerDAO.updatePasswordByAccount(caller);
+		return row;
+	}
+
+	@Override
+	public Caller queryByAccount(String account) {
+
+		if (account == null || account.trim().length() == 0) {
+			return null;
+		}
+		Caller caller = this.callerDAO.queryByAccount(account);
+
+		return caller;
+	}
+
+	@Override
+	public List<Caller> queryByName(String name) {
+		if (name == null || name.trim().length() == 0) {
+			return null;
+		}
+		List<Caller> list = this.callerDAO.queryByName(name);
+		return list;
+	}
+
+	@Override
+	public List<Caller> queryAll() {
+		List<Caller> list = this.callerDAO.queryAll();
+		return list;
+	}
+
+	@Override
+	public int updateDisableByAccount(Caller caller) {
+		// TODO 自动生成的方法存根
+		if (caller == null) {
+			return 0;
+		}
+		int row = this.callerDAO.updateDisabledByAccount(caller);
+		return row;
+
+	}
+
+}

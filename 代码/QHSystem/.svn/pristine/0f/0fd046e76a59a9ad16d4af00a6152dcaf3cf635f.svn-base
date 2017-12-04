@@ -1,0 +1,258 @@
+package com.teamfirst.callnum.services.impl;
+
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.teamfirst.callnum.services.CallNumService;
+import com.teamfirst.constant.NetConstant;
+import com.teamfirst.dto.RequestMsg;
+import com.teamfirst.dto.ResponseMsg;
+import com.teamfirst.entity.Ticket;
+import com.teamfirst.server.dao.TicketDAO;
+import com.teamfirst.server.dao.impl.TicketDAOImplJDBC;
+import com.teamfirst.util.net.NetUtil;
+
+public class CallNumServiceImplJDBC implements CallNumService {
+
+	private TicketDAO ticketDAO = null;
+
+	public CallNumServiceImplJDBC() {
+		this.ticketDAO = new TicketDAOImplJDBC();
+	}
+
+	@Override
+	public int insertTicket(Ticket ticket) {
+		if (ticket == null) {
+			return 0;
+
+		} else {
+			// return ticketDAO.insertTicket(ticket);
+
+			int result = 0;
+			try {
+
+				RequestMsg<Ticket> requestMsg = new RequestMsg<Ticket>();
+				requestMsg.setRequest(NetConstant.CALLER_LOGIN);
+				requestMsg.setObj(ticket);
+
+				// 发送这个DTO对象给Server
+				NetUtil.send(BaseServices.getDs(), requestMsg,
+						InetAddress.getByName(NetConstant.SERVER_IP),
+						NetConstant.SERVER_PORT);
+				// 考虑的接收服务器段的回应
+				DatagramPacket dp = NetUtil.recevice(BaseServices.getDs());
+				// 转化一个对象
+				ResponseMsg<?> responseMsg = (ResponseMsg<?>) NetUtil
+						.conversObj(dp);
+				if (responseMsg.getResponse() == NetConstant.RESULT_CALLER_LOGIN) {
+					result = (Integer) responseMsg.getObj();
+
+				}
+
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+			return result;
+
+		}
+
+	}
+
+	@Override
+	public int updateTicketById(Ticket ticket) {
+		if (ticket == null) {
+			return 0;
+		}
+		// return this.ticketDAO.updateById(ticket);
+		int result = 0;
+		try {
+
+			RequestMsg<Ticket> requestMsg = new RequestMsg<Ticket>();
+			requestMsg.setRequest(NetConstant.TICKETDAO_UPDATE_BY_ID);
+			requestMsg.setObj(ticket);
+
+			// 发送这个DTO对象给Server
+			NetUtil.send(BaseServices.getDs(), requestMsg,
+					InetAddress.getByName(NetConstant.SERVER_IP),
+					NetConstant.SERVER_PORT);
+			// 考虑的接收服务器段的回应
+			DatagramPacket dp = NetUtil.recevice(BaseServices.getDs());
+			// 转化一个对象
+			ResponseMsg<?> responseMsg = (ResponseMsg<?>) NetUtil
+					.conversObj(dp);
+			if (responseMsg.getResponse() == NetConstant.RESULT_TICKETDAO_UPDATE_BY_ID) {
+				result = (Integer) responseMsg.getObj();
+
+			}
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+	@Override
+	public Ticket queryByBusinessId(int businessId) {
+		if (businessId == 0) {// 如果等待人数为0，返回空对象
+			return null;
+		}
+		// 等待人数不为0则把相关数据读入数据库
+		// return this.ticketDAO.queryByBusinessId(businessId);
+		Ticket result = null;
+		try {
+
+			RequestMsg<Integer> requestMsg = new RequestMsg<Integer>();
+			requestMsg.setRequest(NetConstant.TICKETDAO_QUERY_BY_BUSINESSID1);
+			requestMsg.setObj(businessId);
+
+			// 发送这个DTO对象给Server
+			NetUtil.send(BaseServices.getDs(), requestMsg,
+					InetAddress.getByName(NetConstant.SERVER_IP),
+					NetConstant.SERVER_PORT);
+			// 考虑的接收服务器段的回应
+			DatagramPacket dp = NetUtil.recevice(BaseServices.getDs());
+			// 转化一个对象
+			ResponseMsg<?> responseMsg = (ResponseMsg<?>) NetUtil
+					.conversObj(dp);
+			if (responseMsg.getResponse() == NetConstant.RESULT_TICKETDAO_QUERY_BY_BUSINESSID1) {
+				result = (Ticket) responseMsg.getObj();
+
+			}
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	@Override
+	public List<Ticket> queryTicketAll() {
+		// TODO Auto-generated method stub
+		// return this.ticketDAO.queryAll();
+		List<Ticket> result = new ArrayList<Ticket>();
+		try {
+
+			RequestMsg<String> requestMsg = new RequestMsg<String>();
+			requestMsg.setRequest(NetConstant.TICKETDAO_QUERY_ALL);
+			requestMsg.setObj("");
+
+			// 发送这个DTO对象给Server
+			NetUtil.send(BaseServices.getDs(), requestMsg,
+					InetAddress.getByName(NetConstant.SERVER_IP),
+					NetConstant.SERVER_PORT);
+			// 考虑的接收服务器段的回应
+			DatagramPacket dp = NetUtil.recevice(BaseServices.getDs());
+			// 转化一个对象
+			ResponseMsg<?> responseMsg = (ResponseMsg<?>) NetUtil
+					.conversObj(dp);
+			if (responseMsg.getResponse() == NetConstant.RESULT_TICKETDAO_QUERY_ALL) {
+				result = (List<Ticket>) responseMsg.getObj();
+
+			}
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+	public List<Ticket> queryTicketAllByisCalled(int isCalled) {
+
+		// return this.ticketDAO.queryAllByisCalled(isCalled);
+		List<Ticket> result = null;
+		try {
+
+			RequestMsg<Integer> requestMsg = new RequestMsg<Integer>();
+			requestMsg.setRequest(NetConstant.TICKETDAO_QUERY_ALL_BY_ISCALLED);
+			requestMsg.setObj(isCalled);
+
+			// 发送这个DTO对象给Server
+			NetUtil.send(BaseServices.getDs(), requestMsg,
+					InetAddress.getByName(NetConstant.SERVER_IP),
+					NetConstant.SERVER_PORT);
+			// 考虑的接收服务器段的回应
+			DatagramPacket dp = NetUtil.recevice(BaseServices.getDs());
+			// 转化一个对象
+			ResponseMsg<?> responseMsg = (ResponseMsg<?>) NetUtil
+					.conversObj(dp);
+			if (responseMsg.getResponse() == NetConstant.RESULT_TICKETDAO_QUERY_ALL_BY_ISCALLED) {
+				result = (List<Ticket>) responseMsg.getObj();
+
+			}
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+	public void updateTicketByid(int id) {
+		// TODO Auto-generated method stub
+		// this.ticketDAO.updateByid(id);
+		List<Ticket> result = new ArrayList<Ticket>();
+		try {
+
+			RequestMsg<String> requestMsg = new RequestMsg<String>();
+			requestMsg.setRequest(NetConstant.TICKETDAO_UPDATE_BY_ID1);
+			requestMsg.setObj("");
+
+			// 发送这个DTO对象给Server
+			NetUtil.send(BaseServices.getDs(), requestMsg,
+					InetAddress.getByName(NetConstant.SERVER_IP),
+					NetConstant.SERVER_PORT);
+			// 考虑的接收服务器段的回应
+			DatagramPacket dp = NetUtil.recevice(BaseServices.getDs());
+			// 转化一个对象
+			ResponseMsg<?> responseMsg = (ResponseMsg<?>) NetUtil
+					.conversObj(dp);
+			if (responseMsg.getResponse() == NetConstant.RESULT_TICKETDAO_UPDATE_BY_ID1) {
+				result = (List<Ticket>) responseMsg.getObj();
+
+			}
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public int updateTicketByID1(Ticket ticket) {
+		if (ticket == null) {
+			return 0;
+		}
+		// return this.ticketDAO.updateByID(ticket);
+		int result = 0;
+		try {
+
+			RequestMsg<Ticket> requestMsg = new RequestMsg<Ticket>();
+			requestMsg.setRequest(NetConstant.TICKETDAO_UPDATE_BY_ID3);
+			requestMsg.setObj(ticket);
+
+			// 发送这个DTO对象给Server
+			NetUtil.send(BaseServices.getDs(), requestMsg,
+					InetAddress.getByName(NetConstant.SERVER_IP),
+					NetConstant.SERVER_PORT);
+			// 考虑的接收服务器段的回应
+			DatagramPacket dp = NetUtil.recevice(BaseServices.getDs());
+			// 转化一个对象
+			ResponseMsg<?> responseMsg = (ResponseMsg<?>) NetUtil
+					.conversObj(dp);
+			if (responseMsg.getResponse() == NetConstant.RESULT_TICKETDAO_UPDATE_BY_ID3) {
+				result = (Integer) responseMsg.getObj();
+
+			}
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+}

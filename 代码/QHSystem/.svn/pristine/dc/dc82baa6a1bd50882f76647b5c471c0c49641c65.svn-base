@@ -1,0 +1,50 @@
+package com.teamfirst.server.services.impl;
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+import com.teamfirst.entity.Caller;
+import com.teamfirst.util.jdbc.Constans;
+import com.teamfirst.util.jdbc.NetUtil;
+
+import dto.RequestMsg;
+import dto.ResponseMsg;
+
+public class ServerMonitor implements Runnable {
+	private final DatagramSocket ds;
+
+	public ServerMonitor(DatagramSocket ds) {
+		this.ds = ds;
+	}
+
+	@Override
+	public void run() {
+		System.out
+				.println("服务器端已经启动，监听在:" + Constans.SERVER_PORT + "端口上......");
+		while (true) {
+			// 接收一个消息
+			DatagramPacket dp = com.teamfirst.util.jdbc.NetUtil.recevice(ds);
+
+			InetAddress clientIp = dp.getAddress();
+			int clientPort = dp.getPort();
+
+			// 将消息转换成为对象
+			RequestMsg<?> requestMsg = (RequestMsg<?>) NetUtil.conversObj(dp);
+			// 进行判断，选择业务流程来处理
+			if (requestMsg.getRequest().equals(Constans.USER_LOGIN)) {
+				Caller user = (Caller) requestMsg.getObj();
+				Boolean result = new CallerService().login(user);
+				// 发挥处理结果给客户端
+				ResponseMsg<Boolean> responseMsg = new ResponseMsg<Boolean>();
+				responseMsg.setObj(result);
+				responseMsg.setResponse(Constans.RESULT_USER_LOGIN);
+				NetUtil.send(ds, responseMsg, clientIp, clientPort);
+			} else if (requestMsg.getRequest().equals(Constans.MANAGER_LOGIN)) {
+				// 处理流程
+			}
+		}
+
+	}
+
+}

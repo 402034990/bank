@@ -1,0 +1,10 @@
+package com.teamfirst.takenum.services;
+
+import com.teamfirst.entity.Ticket;
+
+public interface TakeNumService {
+
+	public abstract int insertTicket(Ticket ticket);
+
+	public abstract Ticket queryByBusinessId(int businessId);
+}

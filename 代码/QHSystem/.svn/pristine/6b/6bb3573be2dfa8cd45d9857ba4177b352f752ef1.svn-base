@@ -1,0 +1,99 @@
+package com.teamfirst.takenum.services.impl;
+
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import com.teamfirst.callnum.services.impl.BaseServices;
+import com.teamfirst.constant.NetConstant;
+import com.teamfirst.dto.RequestMsg;
+import com.teamfirst.dto.ResponseMsg;
+import com.teamfirst.entity.Caller;
+import com.teamfirst.entity.Ticket;
+import com.teamfirst.server.dao.BusinessDAO;
+import com.teamfirst.server.dao.TicketDAO;
+import com.teamfirst.server.dao.impl.TicketDAOImplJDBC;
+import com.teamfirst.takenum.services.TakeNumService;
+import com.teamfirst.util.net.NetUtil;
+
+public class TakeNumSeviceImplJDBC implements TakeNumService {
+
+	private TicketDAO ticketDAO = null;
+
+	public TakeNumSeviceImplJDBC() {
+		ticketDAO = new TicketDAOImplJDBC();
+	}
+
+	@Override
+	public int insertTicket(Ticket ticket) {
+/*		if (ticket == null) {
+			return 0;
+		} else {
+			
+			int rows = ticketDAO.insertTicket(ticket);
+
+			return rows;*/
+
+		Integer result = null;
+		try {
+
+			RequestMsg<Ticket> requestMsg = new RequestMsg<Ticket>();
+			requestMsg.setRequest(NetConstant.TICKETDAO_INSERT_TICKET);
+			requestMsg.setObj(ticket);
+
+			// 发送这个DTO对象给Server
+			NetUtil.send(BaseServices.getDs(), requestMsg,
+					InetAddress.getByName(NetConstant.SERVER_IP),
+					NetConstant.SERVER_PORT);
+			// 考虑的接收服务器段的回应
+			DatagramPacket dp = NetUtil.recevice(BaseServices.getDs());
+			// 转化一个对象
+			ResponseMsg<?> responseMsg = (ResponseMsg<?>) NetUtil
+					.conversObj(dp);
+			if (responseMsg.getResponse() == NetConstant.RESULT_TICKETDAO_INSERT_TICKET) {
+				result = (Integer) responseMsg.getObj();
+
+			}
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
+
+	@Override
+	public Ticket queryByBusinessId(int businessId) {
+
+		// ticketDAO.queryByBusinessId(businessId);
+
+//		return ticketDAO.queryByBusinessId(businessId);
+		
+		Ticket result = null;
+		try {
+
+			RequestMsg<Integer> requestMsg = new RequestMsg<Integer>();
+			requestMsg.setRequest(NetConstant.TICKETDAO_QUERY_BYBUSINESSID);
+			requestMsg.setObj(businessId);
+
+			// 发送这个DTO对象给Server
+			NetUtil.send(BaseServices.getDs(), requestMsg,
+					InetAddress.getByName(NetConstant.SERVER_IP),
+					NetConstant.SERVER_PORT);
+			// 考虑的接收服务器段的回应
+			DatagramPacket dp = NetUtil.recevice(BaseServices.getDs());
+			// 转化一个对象
+			ResponseMsg<?> responseMsg = (ResponseMsg<?>) NetUtil
+					.conversObj(dp);
+			if (responseMsg.getResponse() == NetConstant.RESULT_TICKETDAO_QUERY_BYBUSINESSID) {
+				result = (Ticket) responseMsg.getObj();
+
+			}
+
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+}

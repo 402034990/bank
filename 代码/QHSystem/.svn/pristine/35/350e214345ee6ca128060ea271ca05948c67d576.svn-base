@@ -1,0 +1,69 @@
+package com.teamfirst.server.services.impl;
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+import com.teamfirst.constant.NetConstant;
+import com.teamfirst.dto.RequestMsg;
+import com.teamfirst.dto.ResponseMsg;
+import com.teamfirst.entity.Caller;
+import com.teamfirst.server.dao.CallerDAO;
+import com.teamfirst.server.dao.impl.CallerDAOImplJDBC;
+import com.teamfirst.util.net.NetUtil;
+
+public class ServerMonitor implements Runnable {
+	private final DatagramSocket ds;
+
+	// private CallerService callerService = new CallerServiceImpl();
+	private CallerDAO callerDAO = new CallerDAOImplJDBC();
+
+	public ServerMonitor(DatagramSocket ds) {
+		this.ds = ds;
+	}
+
+	@Override
+	public void run() {
+		System.out.println("服务器端已经启动，监听在:" + NetConstant.SERVER_PORT
+				+ "端口上......");
+		while (true) {
+			// 接收一个消息
+			DatagramPacket dp = com.teamfirst.util.net.NetUtil
+					.recevice(this.ds);
+
+			InetAddress clientIp = dp.getAddress();
+			int clientPort = dp.getPort();
+
+			// 将消息转换成为对象
+			RequestMsg<?> requestMsg = (RequestMsg<?>) NetUtil.conversObj(dp);
+			// 进行判断，选择业务流程来处理
+
+			this.doIt(requestMsg, clientIp, clientPort);
+
+		}
+
+	}
+
+	private void doIt(RequestMsg<?> requestMsg, InetAddress clientIp,
+			int clientPort) {
+		switch (requestMsg.getRequest()) {
+
+		case NetConstant.CALLER_LOGIN:
+
+			String account = (String) requestMsg.getObj();
+			Caller caller = this.callerDAO.queryByAccount(account);
+			// 发回处理结果给客户端
+			ResponseMsg<Caller> responseMsg = new ResponseMsg<Caller>();
+			responseMsg.setObj(caller);
+			responseMsg.setResponse(NetConstant.RESULT_CALLER_LOGIN);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+
+		default:
+			break;
+		}
+
+	}
+
+}

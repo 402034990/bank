@@ -1,0 +1,148 @@
+package com.taketicket.server.dao.impl;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import com.taketicket.entity.Manager;
+import com.taketicket.server.dao.ManagerDAO;
+import com.taketicket.server.dao.exception.DAOException;
+import com.taketicket.util.jdbc.JDBCTemplate;
+import com.taketicket.util.jdbc.RowMapper;
+
+public class ManagerDAOImplJDBC implements ManagerDAO {
+
+	@Override
+	public int insertManager(Manager manager) {
+
+		String[] sqls = { "insert into manager(account, name, password) values(?,?,?)" };
+
+		Object[][] properties = { { manager.getAccount(), manager.getName(),
+				manager.getPassword() } };
+
+		return this.update(sqls, properties);
+	}
+
+	@Override
+	public int deleteManagerByAccount(String account) {
+
+		String[] sqls = { "delete from manager where account = ?" };
+
+		Object[][] properties = { { account } };
+
+		return this.update(sqls, properties);
+	}
+
+	@Override
+	public int deleteManagerByName(String name) {
+
+		String[] sqls = { "delete from manager where name = ?" };
+
+		Object[][] properties = { { name } };
+
+		return this.update(sqls, properties);
+	}
+
+	@Override
+	public int updatePasswordByAccount(Manager manager) {
+
+		String[] sqls = { "update manager set password = ? where account = ?" };
+
+		Object[][] properties = { { manager.getPassword(), manager.getAccount() } };
+
+		return this.update(sqls, properties);
+	}
+
+	@Override
+	public Manager queryByAccount(String account) {
+
+		String sql = "select * from manager where account = ?";
+
+		Object[] properties = { account };
+
+		List<Manager> list = this.query(sql, properties);
+
+		if (list == null || list.size() == 0) {
+			return null;
+		} else {
+			return list.get(0);
+		}
+	}
+
+	@Override
+	public Manager queryByName(String name) {
+
+		String sql = "select * from manager where name = ?";
+
+		Object[] properties = { name };
+
+		List<Manager> list = this.query(sql, properties);
+
+		if (list == null || list.size() == 0) {
+			return null;
+		} else {
+			return list.get(0);
+		}
+	}
+
+	@Override
+	public List<Manager> queryAll() {
+
+		String sql = "select * from manager";
+
+		Object[] properties = {};
+
+		return this.query(sql, properties);
+	}
+
+	private List<Manager> query(String sql, Object[] properties) {
+		List list = JDBCTemplate.queryByProperties(sql, properties,
+				new RowMapper() {
+					@Override
+					public Object mapRow(ResultSet resultSet) {
+
+						Manager manager = new Manager();
+
+						try {
+
+							manager.setId(resultSet.getInt("id"));
+							manager.setAccount(resultSet.getString("account"));
+							manager.setName(resultSet.getString("name"));
+							manager.setPassword(resultSet.getString("password"));
+
+						} catch (SQLException e) {
+
+							throw new DAOException(e.getMessage());
+						}
+						return manager;
+					}
+				});
+
+		if (list == null || list.size() == 0) {
+			return null;
+		} else {
+			return list;
+		}
+	}
+
+	private int update(String[] sqls, Object[][] properties) {
+		boolean success = JDBCTemplate.update(sqls, properties);
+
+		if (success) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	@Override
+	public int updateDisabledByaccount(Manager manager) {
+		// TODO 自动生成的方法存根
+		String[] sqls = { "update manager set disabled = ? where account = ?" };
+
+		Object[][] properties = { { manager.getdisabled(), manager.getAccount() } };
+
+		return this.update(sqls, properties);
+
+	}
+}

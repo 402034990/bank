@@ -1,0 +1,51 @@
+package com.teamfirst.entity;
+
+public class Ticket_Caller_Business_VO {
+
+	private String caller_name;
+	private int caller_id;
+	private int window_num;
+	private String business_name;
+	private int isCalled;
+
+	public int getIsCalled() {
+		return this.isCalled;
+	}
+
+	public void setIsCalled(int isCalled) {
+		this.isCalled = isCalled;
+	}
+
+	public String getCaller_name() {
+		return this.caller_name;
+	}
+
+	public void setCaller_name(String caller_name) {
+		this.caller_name = caller_name;
+	}
+
+	public int getCaller_id() {
+		return this.caller_id;
+	}
+
+	public void setCaller_id(int caller_id) {
+		this.caller_id = caller_id;
+	}
+
+	public int getWindow_num() {
+		return this.window_num;
+	}
+
+	public void setWindow_num(int window_num) {
+		this.window_num = window_num;
+	}
+
+	public String getBusiness_name() {
+		return this.business_name;
+	}
+
+	public void setBusiness_name(String business_name) {
+		this.business_name = business_name;
+	}
+
+}

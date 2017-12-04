@@ -1,0 +1,828 @@
+package com.taketicket.manager.ui;
+
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableModel;
+
+import com.taketicket.constant.Flavor;
+import com.taketicket.constant.MyConstant;
+import com.taketicket.entity.TicketVO;
+import com.taketicket.manager.services.TicketService;
+import com.taketicket.manager.services.impl.TicketServiceImplJDBC;
+import com.taketicket.util.ui.MyClock;
+
+public class CheckForSituation extends JFrame {
+
+	private final JPanel contentPane;
+	private final JTable table_2;
+	private JTabbedPane tabbedPane_1;
+	private JScrollPane scrollPane;
+	private JScrollPane scrollPane_1;
+	private JScrollPane scrollPane_5;
+	private JScrollPane scrollPane_6;
+	private JTable table_3;
+	private JTable table;
+	private JTable table_1;
+	private JTable table_4;
+	private final JFrame mainFrame;
+
+	private final JLabel picLabel;
+	private boolean isFirst = true;
+
+	/**
+	 * Launch the application.
+	 */
+	// public static void main(String[] args) {
+	// try {
+	// UIManager
+	// .setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+	// } catch (Throwable e) {
+	// e.printStackTrace();
+	// }
+	// EventQueue.invokeLater(new Runnable() {
+	// @Override
+	// public void run() {
+	// try {
+	// UIManager
+	// .setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+	// CheckForSituation frame = new CheckForSituation();
+	// frame.setVisible(true);
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// });
+	// }
+
+	public JLabel getPicLabel() {
+		return this.picLabel;
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public CheckForSituation(JFrame mainFrame) {
+
+		try {
+			UIManager.setLookAndFeel(Flavor.FLAVOR_PATH);
+		} catch (Exception e1) {
+			System.out.println("change flavor fail");
+		}
+
+		this.mainFrame = mainFrame;
+		this.setTitle("\u67E5\u770B\u529E\u7406\u60C5\u51B5");
+		this.setResizable(false);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setBounds(100, 100, 510, 600);
+		this.contentPane = new JPanel();
+		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		this.setContentPane(this.contentPane);
+		this.contentPane.setLayout(null);
+
+		JTabbedPane tabbedPane = new JTabbedPane(SwingConstants.TOP);
+		tabbedPane.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				CheckForSituation.this.tabbedPaneStateChanged(e);
+			}
+
+		});
+		tabbedPane.setBounds(0, 118, 504, 377);
+		this.contentPane.add(tabbedPane);
+
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("历史记录", null, panel, null);
+		panel.setLayout(null);
+		panel.add(this.getTabbedPane_1());
+
+		// JLabel label_1 = new
+		// JLabel("\u6309\u4E1A\u52A1\u4EE3\u7801\u67E5\u8BE2");
+		// TitledBorder titledBorder = new TitledBorder("按业务代码查询");
+		// label_1.setBounds(25, 222, 92, 18);
+		// titledBorder.
+		// panel.add(titledBorder);
+
+		JPanel panel_1 = new JPanel();
+		tabbedPane.addTab("当前流量", null, panel_1, null);
+		panel_1.setLayout(null);
+
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(0, 0, 504, 345);
+		panel_1.add(scrollPane_2);
+
+		this.table_2 = new JTable();
+		scrollPane_2.setViewportView(this.table_2);
+		this.table_2.setModel(new DefaultTableModel(new Object[][] {
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null },
+				{ null, null, null, null, null }, }, new String[] {
+				"\u4E1A\u52A1\u540D\u79F0", "\u53D6\u53F7\u6570",
+				"\u6210\u529F\u6570", "\u529E\u7406\u6570",
+				"\u6210\u529F\u7387" }));
+
+		JButton button_2 = new JButton("\u4E3B\u83DC\u5355");
+		button_2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				CheckForSituation.this.button_2ActionPerformed(e);
+			}
+
+		});
+		button_2.setBounds(12, 520, 102, 39);
+		this.contentPane.add(button_2);
+
+		JLabel clockLabel = new JLabel(MyClock.getDateTime());
+		clockLabel.setFont(new Font("宋体", Font.PLAIN, 16));
+		MyClock.showTimeAtLabel(clockLabel);
+		clockLabel.setBounds(271, 516, 223, 39);
+		this.contentPane.add(clockLabel);
+
+		this.picLabel = new JLabel("");
+		this.picLabel.setIcon(new ImageIcon(CheckForSituation.class
+				.getResource(Flavor.BACKGROUND_ICON_PATH)));
+		this.picLabel.setBounds(0, 0, 504, 572);
+		this.contentPane.add(this.picLabel);
+
+		this.setLocationRelativeTo(null);// 窗口在屏幕中间显示
+	}
+
+	private JTabbedPane getTabbedPane_1() {
+		if (this.tabbedPane_1 == null) {
+			this.tabbedPane_1 = new JTabbedPane(SwingConstants.TOP);
+
+			this.tabbedPane_1.addChangeListener(new ChangeListener() {
+				@Override
+				public void stateChanged(ChangeEvent e) {
+					CheckForSituation.this.tabbedPane_1StateChanged(e);
+				}
+			});
+
+			this.tabbedPane_1.setBounds(0, 0, 504, 345);
+			this.tabbedPane_1.addTab("按日查询", null, this.getScrollPane(), null);
+			this.tabbedPane_1
+					.addTab("按月查询", null, this.getScrollPane_1(), null);
+			this.tabbedPane_1
+					.addTab("按季查询", null, this.getScrollPane_5(), null);
+			this.tabbedPane_1
+					.addTab("按年查询", null, this.getScrollPane_6(), null);
+		}
+		return this.tabbedPane_1;
+	}
+
+	private JScrollPane getScrollPane() {
+		if (this.scrollPane == null) {
+			this.scrollPane = new JScrollPane();
+			this.scrollPane.setViewportView(this.getTable_3());
+		}
+		return this.scrollPane;
+	}
+
+	private JScrollPane getScrollPane_1() {
+		if (this.scrollPane_1 == null) {
+			this.scrollPane_1 = new JScrollPane();
+
+			this.table = new JTable();
+			this.table.setModel(new DefaultTableModel(new Object[][] {
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null }, }, new String[] {
+					"\u65E5\u671F", "\u540D\u79F0", "\u53D6\u53F7\u6570",
+					"\u6210\u529F\u6570", "\u5931\u8D25\u6570",
+					"\u6210\u529F\u7387" }));
+			this.scrollPane_1.setViewportView(this.table);
+		}
+		return this.scrollPane_1;
+	}
+
+	private JScrollPane getScrollPane_5() {
+		if (this.scrollPane_5 == null) {
+			this.scrollPane_5 = new JScrollPane();
+
+			this.table_1 = new JTable();
+			this.table_1.setModel(new DefaultTableModel(new Object[][] {
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null }, }, new String[] {
+					"\u65E5\u671F", "\u540D\u79F0", "\u53D6\u53F7\u6570",
+					"\u6210\u529F\u6570", "\u5931\u8D25\u6570",
+					"\u6210\u529F\u7387" }));
+			this.scrollPane_5.setViewportView(this.table_1);
+		}
+		return this.scrollPane_5;
+	}
+
+	private JScrollPane getScrollPane_6() {
+		if (this.scrollPane_6 == null) {
+			this.scrollPane_6 = new JScrollPane();
+
+			this.table_4 = new JTable();
+			this.table_4.setModel(new DefaultTableModel(new Object[][] {
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null }, }, new String[] {
+					"\u65E5\u671F", "\u540D\u79F0", "\u53D6\u53F7\u6570",
+					"\u6210\u529F\u6570", "\u5931\u8D25\u6570",
+					"\u6210\u529F\u7387" }));
+			this.scrollPane_6.setViewportView(this.table_4);
+		}
+		return this.scrollPane_6;
+	}
+
+	public JTable getTable_3() {
+		if (this.table_3 == null) {
+			this.table_3 = new JTable();
+			this.table_3.setModel(new DefaultTableModel(new Object[][] {
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null },
+					{ null, null, null, null, null, null }, }, new String[] {
+					"\u65E5\u671F", "\u540D\u79F0", "\u53D6\u53F7\u6570",
+					"\u6210\u529F\u6570", "\u5931\u8D25\u6570",
+					"\u6210\u529F\u7387" }));
+		}
+		return this.table_3;
+
+	}
+
+	private void tabbedPaneStateChanged(ChangeEvent e) {
+		if (((JTabbedPane) e.getSource()).getSelectedIndex() == 1) {
+
+			// System.out.println("select --------");
+
+			TicketService ticketService = new TicketServiceImplJDBC();
+
+			List<TicketVO> list = ticketService.queryCheckByTicketVO(5);
+			List<TicketVO> successList = ticketService
+					.querySuccessByTicketVO(MyConstant.SUCCESS);
+			List<TicketVO> failList = ticketService
+					.querySuccessByTicketVO(MyConstant.FAIL);
+
+			if (list == null || list.size() == 0) {
+				JOptionPane.showMessageDialog(null, "暂无数据", "警告",
+						JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+
+			JTable table123 = this.table_2;
+
+			DefaultTableModel tableModel = (DefaultTableModel) table123
+					.getModel();
+			tableModel.setRowCount(0);// 清除原有行
+
+			if (list.size() < 26) {
+				tableModel.setRowCount(26);
+			} else {
+
+				tableModel.setRowCount(list.size());
+			}
+
+			for (int i = 0; i < list.size(); i++) {
+
+				TicketVO vo = list.get(i);
+
+				// table123.setValueAt(vo.getTicket_takeDate(), i, 0);
+				table123.setValueAt(vo.getBusiness_name(), i, 0);
+				table123.setValueAt(vo.getCount(), i, 1);
+
+				int bb = 0;
+				if (successList == null || successList.size() == 0) {
+					table123.setValueAt(0, i, 2);
+				} else {
+
+					boolean flag = true;
+					for (int j = 0; j < successList.size(); j++) {
+						if (vo.getTicket_takeDate().equals(
+								successList.get(j).getTicket_takeDate())
+								&& vo.getBusiness_name().equals(
+										successList.get(j).getBusiness_name())) {
+
+							bb = successList.get(j).getCount();
+							table123.setValueAt(bb, i, 2);
+							flag = false;
+							break;
+						}
+					}
+					if (flag) {
+						table123.setValueAt(0, i, 2);
+					}
+				}
+				if (failList == null || failList.size() == 0) {
+					table123.setValueAt(0, i, 3);
+				} else {
+					boolean flag1 = true;
+					for (int j = 0; j < failList.size(); j++) {
+						if (vo.getTicket_takeDate().equals(
+								failList.get(j).getTicket_takeDate())
+								&& vo.getBusiness_name().equals(
+										failList.get(j).getBusiness_name())) {
+
+							int aaa = failList.get(j).getCount();
+							table123.setValueAt(aaa, i, 3);
+							flag1 = false;
+							break;
+						}
+					}
+					if (flag1) {
+						table123.setValueAt(0, i, 3);
+					}
+				}
+
+				if (vo.getCount() == 0) {
+					table123.setValueAt("0.0%", i, 4);
+				} else {
+					float result = (float) (bb * 1.0 / vo.getCount());
+					table123.setValueAt((result * 100) + "%", i, 4);
+				}
+
+			}
+
+		}
+	}
+
+	private void tabbedPane_1StateChanged(ChangeEvent e) {
+		if (((JTabbedPane) e.getSource()).getSelectedIndex() == 0) {
+
+			// System.out.println("select 0");
+			if (this.isFirst) {
+				this.isFirst = false;
+				return;
+			}
+
+			TicketService ticketService = new TicketServiceImplJDBC();
+
+			List<TicketVO> list = ticketService.queryCheckByTicketVO(1);
+			List<TicketVO> successList = ticketService
+					.querySuccessByTicketVO(MyConstant.SUCCESS);
+			List<TicketVO> failList = ticketService
+					.querySuccessByTicketVO(MyConstant.FAIL);
+
+			// for (TicketVO ticketVO : successList) {
+			// System.out.print(ticketVO.getCount() + ",,,,");
+			// }
+
+			if (list == null || list.size() == 0) {
+				JOptionPane.showMessageDialog(null, "暂无数据", "警告",
+						JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+
+			JTable table123 = this.getTable_3();
+
+			DefaultTableModel tableModel = (DefaultTableModel) table123
+					.getModel();
+			tableModel.setRowCount(0);// 清除原有行
+			if (list.size() < 26) {
+				tableModel.setRowCount(26);
+			} else {
+
+				tableModel.setRowCount(list.size());
+			}
+			for (int i = 0; i < list.size(); i++) {
+
+				TicketVO vo = list.get(i);
+
+				table123.setValueAt(vo.getTicket_takeDate(), i, 0);
+				table123.setValueAt(vo.getBusiness_name(), i, 1);
+				table123.setValueAt(vo.getCount(), i, 2);
+
+				int bb = 0;
+				if (successList == null || successList.size() == 0) {
+					table123.setValueAt(0, i, 3);
+				} else {
+
+					boolean flag = true;
+					for (int j = 0; j < successList.size(); j++) {
+						if (vo.getTicket_takeDate().equals(
+								successList.get(j).getTicket_takeDate())
+								&& vo.getBusiness_name().equals(
+										successList.get(j).getBusiness_name())) {
+
+							bb = successList.get(j).getCount();
+							table123.setValueAt(bb, i, 3);
+							flag = false;
+							break;
+						}
+					}
+					if (flag) {
+						table123.setValueAt(0, i, 3);
+					}
+				}
+				if (failList == null || failList.size() == 0) {
+					table123.setValueAt(0, i, 4);
+				} else {
+					boolean flag1 = true;
+					for (int j = 0; j < failList.size(); j++) {
+						if (vo.getTicket_takeDate().equals(
+								failList.get(j).getTicket_takeDate())
+								&& vo.getBusiness_name().equals(
+										failList.get(j).getBusiness_name())) {
+
+							int aaa = failList.get(j).getCount();
+							table123.setValueAt(aaa, i, 4);
+							flag1 = false;
+							break;
+						}
+					}
+					if (flag1) {
+						table123.setValueAt(0, i, 4);
+					}
+				}
+
+				if (vo.getCount() == 0) {
+					table123.setValueAt("0.0%", i, 5);
+				} else {
+					float result = (float) (bb * 1.0 / vo.getCount());
+					table123.setValueAt((result * 100) + "%", i, 5);
+				}
+
+			}
+
+		} else if (((JTabbedPane) e.getSource()).getSelectedIndex() == 1) {
+
+			TicketService ticketService = new TicketServiceImplJDBC();
+
+			List<TicketVO> list = ticketService.queryCheckByTicketVO(2);
+			List<TicketVO> successList = ticketService
+					.querySuccessByTicketVO(MyConstant.SUCCESS);
+			List<TicketVO> failList = ticketService
+					.querySuccessByTicketVO(MyConstant.FAIL);
+
+			if (list == null || list.size() == 0) {
+				JOptionPane.showMessageDialog(null, "暂无数据", "警告",
+						JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+
+			JTable table123 = this.table;
+
+			DefaultTableModel tableModel = (DefaultTableModel) table123
+					.getModel();
+			tableModel.setRowCount(0);// 清除原有行
+
+			if (list.size() < 26) {
+				tableModel.setRowCount(26);
+			} else {
+
+				tableModel.setRowCount(list.size());
+			}
+
+			for (int i = 0; i < list.size(); i++) {
+
+				TicketVO vo = list.get(i);
+
+				table123.setValueAt(vo.getTicket_takeDate(), i, 0);
+				table123.setValueAt(vo.getBusiness_name(), i, 1);
+				table123.setValueAt(vo.getCount(), i, 2);
+
+				int bb = 0;
+				if (successList == null || successList.size() == 0) {
+					table123.setValueAt(0, i, 3);
+				} else {
+
+					boolean flag = true;
+					for (int j = 0; j < successList.size(); j++) {
+						if (vo.getTicket_takeDate().equals(
+								successList.get(j).getTicket_takeDate())
+								&& vo.getBusiness_name().equals(
+										successList.get(j).getBusiness_name())) {
+
+							bb = successList.get(j).getCount();
+							table123.setValueAt(bb, i, 3);
+							flag = false;
+							break;
+						}
+					}
+					if (flag) {
+						table123.setValueAt(0, i, 3);
+					}
+				}
+				if (failList == null || failList.size() == 0) {
+					table123.setValueAt(0, i, 4);
+				} else {
+					boolean flag1 = true;
+					for (int j = 0; j < failList.size(); j++) {
+						if (vo.getTicket_takeDate().equals(
+								failList.get(j).getTicket_takeDate())
+								&& vo.getBusiness_name().equals(
+										failList.get(j).getBusiness_name())) {
+
+							int aaa = failList.get(j).getCount();
+							table123.setValueAt(aaa, i, 4);
+							flag1 = false;
+							break;
+						}
+					}
+					if (flag1) {
+						table123.setValueAt(0, i, 4);
+					}
+				}
+
+				if (vo.getCount() == 0) {
+					table123.setValueAt("0.0%", i, 5);
+				} else {
+					float result = (float) (bb * 1.0 / vo.getCount());
+					table123.setValueAt((result * 100) + "%", i, 5);
+				}
+
+			}
+
+		} else if (((JTabbedPane) e.getSource()).getSelectedIndex() == 2) {
+
+			// System.out.println("select 2");
+
+			TicketService ticketService = new TicketServiceImplJDBC();
+
+			List<TicketVO> list = ticketService.queryCheckByTicketVO(3);
+			List<TicketVO> successList = ticketService
+					.querySuccessByTicketVO(MyConstant.SUCCESS);
+			List<TicketVO> failList = ticketService
+					.querySuccessByTicketVO(MyConstant.FAIL);
+
+			if (list == null || list.size() == 0) {
+				JOptionPane.showMessageDialog(null, "暂无数据", "警告",
+						JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+
+			JTable table123 = this.table_1;
+
+			DefaultTableModel tableModel = (DefaultTableModel) table123
+					.getModel();
+			tableModel.setRowCount(0);// 清除原有行
+
+			if (list.size() < 26) {
+				tableModel.setRowCount(26);
+			} else {
+
+				tableModel.setRowCount(list.size());
+			}
+
+			for (int i = 0; i < list.size(); i++) {
+
+				TicketVO vo = list.get(i);
+
+				table123.setValueAt(vo.getTicket_takeDate(), i, 0);
+				table123.setValueAt(vo.getBusiness_name(), i, 1);
+				table123.setValueAt(vo.getCount(), i, 2);
+
+				int bb = 0;
+				if (successList == null || successList.size() == 0) {
+					table123.setValueAt(0, i, 3);
+				} else {
+
+					boolean flag = true;
+					for (int j = 0; j < successList.size(); j++) {
+						if (vo.getTicket_takeDate().equals(
+								successList.get(j).getTicket_takeDate())
+								&& vo.getBusiness_name().equals(
+										successList.get(j).getBusiness_name())) {
+
+							bb = successList.get(j).getCount();
+							table123.setValueAt(bb, i, 3);
+							flag = false;
+							break;
+						}
+					}
+					if (flag) {
+						table123.setValueAt(0, i, 3);
+					}
+				}
+				if (failList == null || failList.size() == 0) {
+					table123.setValueAt(0, i, 4);
+				} else {
+					boolean flag1 = true;
+					for (int j = 0; j < failList.size(); j++) {
+						if (vo.getTicket_takeDate().equals(
+								failList.get(j).getTicket_takeDate())
+								&& vo.getBusiness_name().equals(
+										failList.get(j).getBusiness_name())) {
+
+							int aaa = failList.get(j).getCount();
+							table123.setValueAt(aaa, i, 4);
+							flag1 = false;
+							break;
+						}
+					}
+					if (flag1) {
+						table123.setValueAt(0, i, 4);
+					}
+				}
+
+				if (vo.getCount() == 0) {
+					table123.setValueAt("0.0%", i, 5);
+				} else {
+					float result = (float) (bb * 1.0 / vo.getCount());
+					table123.setValueAt((result * 100) + "%", i, 5);
+				}
+
+			}
+
+		} else if (((JTabbedPane) e.getSource()).getSelectedIndex() == 3) {
+
+			// System.out.println("select 3");
+
+			TicketService ticketService = new TicketServiceImplJDBC();
+
+			List<TicketVO> list = ticketService.queryCheckByTicketVO(4);
+			List<TicketVO> successList = ticketService
+					.querySuccessByTicketVO(MyConstant.SUCCESS);
+			List<TicketVO> failList = ticketService
+					.querySuccessByTicketVO(MyConstant.FAIL);
+
+			if (list == null || list.size() == 0) {
+				JOptionPane.showMessageDialog(null, "暂无数据", "警告",
+						JOptionPane.INFORMATION_MESSAGE);
+				return;
+			}
+
+			JTable table123 = this.table_4;
+
+			DefaultTableModel tableModel = (DefaultTableModel) table123
+					.getModel();
+			tableModel.setRowCount(0);// 清除原有行
+
+			if (list.size() < 26) {
+				tableModel.setRowCount(26);
+			} else {
+
+				tableModel.setRowCount(list.size());
+			}
+			for (int i = 0; i < list.size(); i++) {
+
+				TicketVO vo = list.get(i);
+
+				table123.setValueAt(vo.getTicket_takeDate(), i, 0);
+				table123.setValueAt(vo.getBusiness_name(), i, 1);
+				table123.setValueAt(vo.getCount(), i, 2);
+
+				int bb = 0;
+				if (successList == null || successList.size() == 0) {
+					table123.setValueAt(0, i, 3);
+				} else {
+
+					boolean flag = true;
+					for (int j = 0; j < successList.size(); j++) {
+						if (vo.getTicket_takeDate().equals(
+								successList.get(j).getTicket_takeDate())
+								&& vo.getBusiness_name().equals(
+										successList.get(j).getBusiness_name())) {
+
+							bb = successList.get(j).getCount();
+							table123.setValueAt(bb, i, 3);
+							flag = false;
+							break;
+						}
+					}
+					if (flag) {
+						table123.setValueAt(0, i, 3);
+					}
+				}
+				if (failList == null || failList.size() == 0) {
+					table123.setValueAt(0, i, 4);
+				} else {
+					boolean flag1 = true;
+					for (int j = 0; j < failList.size(); j++) {
+						if (vo.getTicket_takeDate().equals(
+								failList.get(j).getTicket_takeDate())
+								&& vo.getBusiness_name().equals(
+										failList.get(j).getBusiness_name())) {
+
+							int aaa = failList.get(j).getCount();
+							table123.setValueAt(aaa, i, 4);
+							flag1 = false;
+							break;
+						}
+					}
+					if (flag1) {
+						table123.setValueAt(0, i, 4);
+					}
+				}
+
+				if (vo.getCount() == 0) {
+					table123.setValueAt("0.0%", i, 5);
+				} else {
+					float result = (float) (bb * 1.0 / vo.getCount());
+					table123.setValueAt((result * 100) + "%", i, 5);
+				}
+
+			}
+		}
+
+	}
+
+	private void button_2ActionPerformed(ActionEvent e) {
+		this.mainFrame.setVisible(true);
+		this.setVisible(false);
+	}
+
+	public void updateFlavor() {
+		try {
+			UIManager.setLookAndFeel(Flavor.FLAVOR_PATH);
+		} catch (Exception e1) {
+			System.out.println("change flavor fail");
+		}
+		SwingUtilities.updateComponentTreeUI(this.getContentPane());
+	}
+}

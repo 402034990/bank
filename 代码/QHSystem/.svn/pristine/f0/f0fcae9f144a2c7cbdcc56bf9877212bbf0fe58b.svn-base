@@ -1,0 +1,89 @@
+package com.teamfirst.constant;
+
+/**
+ * 存放都是请求常量
+ * 
+ * @author Administrator
+ * 
+ */
+public class NetConstant {
+
+	public static int CLIENT_PORT = 6666;
+	public static int SERVER_PORT = 8888;
+	public static String SERVER_IP = "localhost";
+
+	public static final int CALLER_LOGIN = 1;
+	public static final int RESULT_CALLER_LOGIN = 2;
+
+	public static final int QUERY_BY_BUSINESS_ID = 200;
+	public static final int RESULT_QUERY_BY_BUSINESS_ID = 201;
+
+	public static final int INSERT_TICKET = 202;
+	public static final int RESULT_INSERT_TICKET = 203;
+
+	public static final int MANAGERDAO_INSERT_MANAGER = 300;
+	public static final int RESULT_MANAGERDAO_INSERT_MANAGER = 301;
+
+	public static final int MANAGERDAO_DELETE_MANAGER_BY_ACCOUNT = 302;
+	public static final int RESULT_MANAGERDAO_DELETE_MANAGER_BY_ACCOUNT = 303;
+
+	public static final int MANAGERDAO_DELETE_MANAGER_BY_NAME = 304;
+	public static final int RESULT_MANAGERDAO_DELETE_MANAGER_BY_NAME = 305;
+
+	public static final int MANAGERDAO_UPDATE_PASSWORD_BY_ACCOUNT = 306;
+	public static final int RESULT_MANAGERDAO_UPDATE_PASSWORD_BY_ACCOUNT = 307;
+
+	public static final int MANAGERDAO_QUERY_BY_ACCOUNT = 308;
+	public static final int RESULT_MANAGERDAO_QUERY_BY_ACCOUNT = 309;
+
+	public static final int MANAGERDAO_QUERY_BY_NAME = 310;
+	public static final int RESULT_MANAGERDAO_QUERY_BY_NAME = 311;
+
+	public static final int MANAGERDAO_QUERY_ALL = 312;
+	public static final int RESULT_MANAGERDAO_QUERY_ALL = 313;
+
+	public static final int MANAGERDAO_UPDATE_DISABLED_BY_ACCOUNT = 314;
+	public static final int RESULT_MANAGERDAO_UPDATE_DISABLED_BY_ACCOUNT = 315;
+
+	public static final int TICKETDAO_INSERT_TICKET = 316;
+	public static final int RESULT_TICKETDAO_INSERT_TICKET = 317;
+	public static final int TICKETDAO_UPDATE_BY_ID = 318;
+	public static final int RESULT_TICKETDAO_UPDATE_BY_ID = 319;
+
+	public static final int TICKETDAO_QUERY_BY_DATE = 320;
+	public static final int RESULT_TICKETDAO_QUERY_BY_DATE = 321;
+
+	public static final int TICKETDAO_QUERY_BY_ID = 322;
+	public static final int RESULT_TICKETDAO_QUERY_BY_ID = 323;
+
+	public static final int TICKETDAO_QUERY_BY_BUSINESS_ID = 324;
+	public static final int RESULT_TICKETDAO_QUERY_BY_BUSINESS_ID = 325;
+
+	public static final int TICKETDAO_QUERY_ALL = 326;
+	public static final int RESULT_TICKETDAO_QUERY_ALL = 327;
+
+	public static final int TICKETDAO_QUERY_TICKETS_BY_BUSINESS_ID = 328;
+	public static final int RESULT_TICKETDAO_QUERY_TICKETS_BY_BUSINESS_ID = 329;
+
+	public static final int TICKETDAO_QUERY_LOG_BY_TICKETVO = 330;
+	public static final int RESULT_TICKETDAO_QUERY_LOG_BY_TICKETVO = 331;
+
+	public static final int TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO = 332;
+	public static final int RESULT_TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO = 333;
+
+	public static final int TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO1 = 334;
+	public static final int RESULT_TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO1 = 335;
+
+	public static final int TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO2 = 336;
+	public static final int RESULT_TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO2 = 337;
+
+	public static final int TICKETDAO_QUERY_DATA_BY_TICKETVO = 338;
+	public static final int RESULT_TICKETDAO_QUERY_DATA_BY_TICKETVO = 339;
+
+	public static final int TICKETDAO_QUERY_CHECK_BY_TICKETVO = 340;
+	public static final int RESULT_TICKETDAO_QUERY_CHECK_BY_TICKETVO = 341;
+
+	public static final int TICKETDAO_QUERY_SUCCESS_BY_TICKETVO = 342;
+	public static final int RESULT_TICKETDAO_QUERY_SUCCESS_BY_TICKETVO = 343;
+
+}

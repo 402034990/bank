@@ -1,0 +1,26 @@
+package com.teamfirst.callnum.services.impl;
+
+import com.teamfirst.callnum.services.CallerLoginService;
+import com.teamfirst.entity.Caller;
+import com.teamfirst.server.dao.CallerDAO;
+import com.teamfirst.server.dao.impl.CallerDAOImplJDBC;
+
+public class CallerLoginServiceImplJDBC implements CallerLoginService {
+
+	private CallerDAO callerDAO = null;
+
+	public CallerLoginServiceImplJDBC() {
+		callerDAO = new CallerDAOImplJDBC();
+	}
+
+	@Override
+	public Caller queryByAccount(String account) {
+		if (account == null || account.trim().length() == 0) {// 如果输入为空格或者没有输入账号直接返回空值
+			return null;
+		} else {// 如果查询结果不为空接返回查询内容，否则返回空值
+			return callerDAO.queryByAccount(account);
+		}
+
+	}
+
+}

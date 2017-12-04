@@ -1,0 +1,9 @@
+package com.teamfirst.callnum.services;
+
+import com.teamfirst.entity.Caller;
+
+public interface CallerLoginService {
+
+	public abstract Caller queryByAccount(String account);
+
+}

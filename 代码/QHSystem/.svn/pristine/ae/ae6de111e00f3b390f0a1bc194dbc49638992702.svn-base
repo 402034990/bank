@@ -1,0 +1,367 @@
+package com.teamfirst.callnum.ui;
+
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
+
+import com.teamfirst.callnum.services.impl.CallNumServiceImplJDBC;
+import com.teamfirst.callnum.services.impl.SoundService;
+import com.teamfirst.constant.Flavor;
+import com.teamfirst.entity.Ticket;
+import com.teamfirst.entity.Window;
+import com.teamfirst.manager.services.impl.BusinessServiceImplJDBC;
+import com.teamfirst.manager.services.impl.WindowServiceImplJDBC;
+import com.teamfirst.server.dao.impl.WindowDAOImplJDBC;
+import com.teamfirst.util.ui.MyClock;
+
+public class Work extends JFrame {
+
+	private final JPanel contentPane;
+	private Login login;
+
+	private final JButton repeatButton;
+	private final JButton nextButton;
+	private final JButton pauseButton;
+	private final JButton successButton;
+	private final JButton failButton;
+
+	private final JButton logOutButton;
+	private final JLabel picLabel = new JLabel("");
+	private JLabel lblNewLabel;
+
+	private SoundService soundService = new SoundService();
+
+	private static int numCount = 1;
+
+	private int ticketId;
+	CallNumServiceImplJDBC callnumserviceimplJDBC = new CallNumServiceImplJDBC();
+	BusinessServiceImplJDBC businessServiceImplJDBC = new BusinessServiceImplJDBC();
+	WindowServiceImplJDBC indowerviceimplJDBC = new WindowServiceImplJDBC();
+	private int windowNum;
+
+	/**
+	 * Launch the application.
+	 */
+	// public static void main(String[] args) {
+	// EventQueue.invokeLater(new Runnable() {
+	// @Override
+	// public void run() {
+	// try {
+	// UIManager
+	// .setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+	// Work frame = new Work();
+	// frame.setVisible(true);
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+	// }
+	// });
+	// }
+
+	public JButton getLogOutButton() {
+		return this.logOutButton;
+	}
+
+	public JLabel getPicLabel() {
+		return this.picLabel;
+	}
+
+	/**
+	 * Create the frame.
+	 */
+	public Work(Login login) {
+
+		try {
+			UIManager.setLookAndFeel(Flavor.FLAVOR_PATH);
+		} catch (Exception e1) {
+			System.out.println("change flavor fail");
+		}
+
+		this.login = login;
+		this.windowNum = this.login.getWindowNum();
+		this.setResizable(false);
+		this.setTitle("\u4E1A\u52A1\u53EB\u53F7\u7A97\u53E3");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setBounds(100, 100, 450, 556);
+		this.contentPane = new JPanel();
+		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		this.setContentPane(this.contentPane);
+		this.contentPane.setLayout(null);
+
+		JLayeredPane layeredPane = new JLayeredPane();
+		layeredPane.setBounds(0, 0, 444, 528);
+		this.contentPane.add(layeredPane);
+
+		this.repeatButton = new JButton("\u91CD\u590D\u53EB\u53F7");
+		this.repeatButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Work.this.soundService.play(
+									"" + Work.this.ticketId, ""
+											+ Work.this.windowNum);
+						} catch (InterruptedException e1) {
+
+							e1.printStackTrace();
+						}
+					}
+				}).start();
+
+				JOptionPane.showMessageDialog(null, "请 " + Work.this.ticketId
+						+ " 号用户到 " + Work.this.windowNum + "号窗口", "提示",
+						JOptionPane.PLAIN_MESSAGE);
+			}
+		});
+		this.repeatButton.setEnabled(false);
+		this.repeatButton.setBounds(167, 124, 93, 43);
+		layeredPane.add(this.repeatButton);
+
+		this.nextButton = new JButton("\u4E0B\u4E2A\u53F7");
+		this.nextButton.addActionListener(new ActionListener() {
+			private final CallNumServiceImplJDBC callnumserviceimplJDBC = new CallNumServiceImplJDBC();
+			private final WindowDAOImplJDBC wdi = new WindowDAOImplJDBC();
+
+			// Window w = wdi.queryWindowByNum(1);
+
+			@SuppressWarnings("unused")
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				List<Ticket> list = new ArrayList<Ticket>();
+				List<Ticket> list1 = new ArrayList<Ticket>();// 接收对应业务类型个Ticket对象
+				// Ticket t = null;
+				// 把未被叫的都查出来且业务类型匹配id查出来
+				list = this.callnumserviceimplJDBC.queryTicketAllByisCalled(0);// 未被叫的
+				if (list == null) {// 如果查询结果为空
+					JOptionPane.showMessageDialog(null, "所有业务已经办完", "错误提示",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				// TODO 根据
+
+				// TODO 需要从list中查出相应的业务类型
+				Window w = this.wdi.queryWindowByNum(Work.this.windowNum);// 2为窗口号
+				int n = w.getBusiness_id();// n 为业务类型码
+
+				for (int i = 0; i < list.size(); i++) {
+					if (list.get(i).getBusiness_id() == n) {
+						list1.add(list.get(i));
+					}
+
+				}
+
+				// Iterator<Ticket> it = list1.iterator();
+				if (list1.size() == 0) {// 如果查询结果为空
+					JOptionPane.showMessageDialog(null, "本业务类型已没有可以被叫的号码",
+							"错误提示", JOptionPane.ERROR_MESSAGE);
+					return;
+
+				}
+
+				Work.this.ticketId = list1.get(0).getId();
+				this.callnumserviceimplJDBC
+						.updateTicketByid(Work.this.ticketId);// ticketId为票号
+
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							Work.this.soundService.play(
+									"" + Work.this.ticketId, ""
+											+ Work.this.windowNum);
+						} catch (InterruptedException e1) {
+
+							e1.printStackTrace();
+						}
+					}
+				}).start();
+
+				JOptionPane.showMessageDialog(null, "请 " + Work.this.ticketId
+						+ " 号用户到 " + Work.this.windowNum + "号窗口", "提示",
+						JOptionPane.PLAIN_MESSAGE);
+
+				Work.this.repeatButton.setEnabled(true);
+				Work.this.failButton.setEnabled(true);
+				Work.this.successButton.setEnabled(true);
+				Work.this.nextButton.setEnabled(false);
+
+				// Todo//开始播音叫号 需要获取到票号以及窗口号
+
+				// 调用播音方法并把是否被叫置为1
+
+				// callnumserviceimplJDBC.updateTicketByid(a);
+			}
+		});
+		this.nextButton.setBounds(167, 206, 93, 43);
+		layeredPane.add(this.nextButton);
+
+		this.pauseButton = new JButton("\u6682\u505C\u670D\u52A1");
+		this.pauseButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (e.getActionCommand().equals("暂停服务")) {
+					Work.this.pauseButton.setText("开始服务");
+					Work.this.repeatButton.setEnabled(false);
+					Work.this.failButton.setEnabled(false);
+					Work.this.successButton.setEnabled(false);
+					Work.this.nextButton.setEnabled(false);
+				} else {
+					Work.this.pauseButton.setText("暂停服务");
+					Work.this.repeatButton.setEnabled(false);
+					Work.this.failButton.setEnabled(false);
+					Work.this.successButton.setEnabled(false);
+					Work.this.nextButton.setEnabled(true);
+				}
+
+			}
+		});
+		this.pauseButton.setBounds(310, 378, 93, 43);
+		layeredPane.add(this.pauseButton);
+
+		this.successButton = new JButton("\u529E\u7406\u5B8C\u6210");
+		this.successButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Work.this.repeatButton.setEnabled(false);
+				Work.this.failButton.setEnabled(false);
+				Work.this.successButton.setEnabled(false);
+				Work.this.nextButton.setEnabled(true);
+
+				System.out.println("callerid " + Work.this.login.getCallerId());
+				System.out.println("callername "
+						+ Work.this.login.getCallerName());
+				System.out.println(Work.this.ticketId);
+				Ticket ticket = new Ticket(Work.this.ticketId,
+						Work.this.windowNum, Work.this.login.getCallerId(), 1,
+						Work.this.login.getCallerName());
+				int a = Work.this.callnumserviceimplJDBC
+						.updateTicketByID1(ticket);// 更新数据库
+				if (a != 1) {
+					JOptionPane.showMessageDialog(null, "更新失败,", "提示",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				JOptionPane.showMessageDialog(null, "更新成功", "提示",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		});
+		this.successButton.setEnabled(false);
+		this.successButton.setBounds(167, 291, 93, 43);
+		layeredPane.add(this.successButton);
+
+		this.failButton = new JButton("\u529E\u7406\u5931\u8D25");
+		this.failButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Work.this.repeatButton.setEnabled(false);
+				Work.this.failButton.setEnabled(false);
+				Work.this.successButton.setEnabled(false);
+				Work.this.nextButton.setEnabled(true);
+
+				// Ticket ticket1 = new Ticket(id, num, caller_id, isSuccess,
+				// caller_name)
+
+				Ticket ticket = new Ticket(Work.this.ticketId,
+						Work.this.windowNum, Work.this.login.getCallerId(), 0,
+						Work.this.login.getCallerName());
+				int a = Work.this.callnumserviceimplJDBC
+						.updateTicketByID1(ticket);// 更新数据库
+				if (a != 1) {
+					JOptionPane.showMessageDialog(null, "更新失败,", "提示",
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				JOptionPane.showMessageDialog(null, "更新成功", "提示",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		});
+		this.failButton.setEnabled(false);
+		this.failButton.setBounds(167, 378, 93, 43);
+		layeredPane.add(this.failButton);
+
+		this.logOutButton = new JButton("");
+		this.logOutButton.setIcon(new ImageIcon(Work.class
+				.getResource(Flavor.CLOSE_ICON_PATH)));
+		this.logOutButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Work.this.logOutButtonActionPerformed(e);
+			}
+
+		});
+		this.logOutButton.setBounds(356, 449, 67, 69);
+		layeredPane.add(this.logOutButton);
+
+		JLabel clockLabel = new JLabel(MyClock.getDateTime());
+		MyClock.showTimeAtLabel(clockLabel);
+		clockLabel.setBounds(10, 10, 180, 23);
+		layeredPane.add(clockLabel);
+
+		// TODO*******************************************************************
+
+		JLabel numLabel = new JLabel("" + this.windowNum);
+		numLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		numLabel.setFont(new Font("宋体", Font.PLAIN, 60));
+		numLabel.setBounds(0, 43, 101, 68);
+		layeredPane.add(numLabel);
+
+		JLabel lblNewLabel_2 = new JLabel("\u53F7\u7A97\u53E3");
+		lblNewLabel_2.setFont(new Font("宋体", Font.PLAIN, 28));
+		lblNewLabel_2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_2.setBounds(111, 68, 105, 32);
+		layeredPane.add(lblNewLabel_2);
+
+		JLabel lblNewLabel_1 = new JLabel(this.login.getBusinessName());
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNewLabel_1.setFont(new Font("宋体", Font.PLAIN, 28));
+		lblNewLabel_1.setBounds(280, 10, 164, 52);
+		layeredPane.add(lblNewLabel_1);
+
+		this.picLabel.setIcon(new ImageIcon(Work.class
+				.getResource(Flavor.BACKGROUND_ICON_PATH)));
+		this.picLabel.setBounds(0, 0, 444, 528);
+		layeredPane.add(this.picLabel);
+
+		this.setLocationRelativeTo(null);// 窗口在屏幕中间显示
+		this.setVisible(true);
+	}
+
+	private void logOutButtonActionPerformed(ActionEvent e) {
+
+		if (this.login == null) {
+			System.out.println("创建login对象");
+			this.login = new Login();
+		}
+		this.login.setVisible(true);
+		this.setVisible(false);
+
+	}
+
+	public void updateFlavor() {
+		try {
+			UIManager.setLookAndFeel(Flavor.FLAVOR_PATH);
+		} catch (Exception e1) {
+			System.out.println("change flavor fail");
+		}
+		SwingUtilities.updateComponentTreeUI(this.getContentPane());
+	}
+}

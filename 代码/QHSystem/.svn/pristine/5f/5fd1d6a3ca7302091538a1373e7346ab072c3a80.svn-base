@@ -1,0 +1,5 @@
+package com.teamfirst.server.services;
+
+public interface LogService {
+
+}

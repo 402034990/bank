@@ -1,0 +1,18 @@
+package com.teamfirst.constant;
+
+/**
+ * 存放都是请求常量
+ * 
+ * @author Administrator
+ * 
+ */
+public class NetConstant {
+
+	public static int CLIENT_PORT = 6666;
+	public static int SERVER_PORT = 8888;
+	public static String SERVER_IP = "localhost";
+
+	public static final int CALLER_LOGIN = 1;
+	public static final int RESULT_CALLER_LOGIN = 2;
+
+}

@@ -1,0 +1,30 @@
+package dto;
+
+import java.io.Serializable;
+/*
+ * 解决是客户端传递给服务器的消息对象
+ * 
+ */
+public class RequestMsg<T> implements Serializable {
+	private String request;
+	private T obj;
+	private String ip;
+	private int port;
+
+	public String getRequest() {
+		return request;
+	}
+
+	public void setRequest(String request) {
+		this.request = request;
+	}
+
+	public T getObj() {
+		return obj;
+	}
+
+	public void setObj(T obj) {
+		this.obj = obj;
+	}
+
+}

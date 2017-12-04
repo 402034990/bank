@@ -1,0 +1,39 @@
+package com.teamfirst.takenum.services.impl;
+
+import com.teamfirst.entity.Ticket;
+import com.teamfirst.server.dao.BusinessDAO;
+import com.teamfirst.server.dao.TicketDAO;
+import com.teamfirst.server.dao.impl.TicketDAOImplJDBC;
+import com.teamfirst.takenum.services.TakeNumService;
+
+public class TakeNumSeviceImplJDBC implements TakeNumService {
+
+	private TicketDAO ticketDAO = null;
+
+	public TakeNumSeviceImplJDBC() {
+		ticketDAO = new TicketDAOImplJDBC();
+	}
+
+	@Override
+	public int insertTicket(Ticket ticket) {
+		if (ticket == null) {
+			return 0;
+		} else {
+			
+			int rows = ticketDAO.insertTicket(ticket);
+
+			return rows;
+
+		}
+
+	}
+
+	@Override
+	public Ticket queryByBusinessId(int businessId) {
+
+		// ticketDAO.queryByBusinessId(businessId);
+
+		return ticketDAO.queryByBusinessId(businessId);
+	}
+
+}

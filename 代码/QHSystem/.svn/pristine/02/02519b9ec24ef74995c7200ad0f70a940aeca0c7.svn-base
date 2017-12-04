@@ -1,0 +1,583 @@
+package com.teamfirst.server.services.impl;
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.Date;
+import java.util.List;
+
+import com.teamfirst.constant.NetConstant;
+import com.teamfirst.dto.RequestMsg;
+import com.teamfirst.dto.ResponseMsg;
+import com.teamfirst.entity.Business;
+import com.teamfirst.entity.Caller;
+import com.teamfirst.entity.Manager;
+import com.teamfirst.entity.Ticket;
+import com.teamfirst.entity.TicketVO;
+import com.teamfirst.entity.Ticket_Caller_Business_VO;
+import com.teamfirst.entity.Ticket_TakeDate_VO;
+import com.teamfirst.server.dao.BusinessDAO;
+import com.teamfirst.server.dao.CallerDAO;
+import com.teamfirst.server.dao.ManagerDAO;
+import com.teamfirst.server.dao.TicketDAO;
+import com.teamfirst.server.dao.WindowDAO;
+import com.teamfirst.server.dao.impl.BusinessDAOImplJDBC;
+import com.teamfirst.server.dao.impl.CallerDAOImplJDBC;
+import com.teamfirst.server.dao.impl.ManagerDAOImplJDBC;
+import com.teamfirst.server.dao.impl.TicketDAOImplJDBC;
+import com.teamfirst.server.dao.impl.WindowDAOImplJDBC;
+import com.teamfirst.util.net.NetUtil;
+
+public class ServerMonitor implements Runnable {
+
+	private final DatagramSocket ds;
+
+	private CallerDAO callerDAO = new CallerDAOImplJDBC();
+	private BusinessDAO businessDAO = new BusinessDAOImplJDBC();
+	private ManagerDAO managerDAO = new ManagerDAOImplJDBC();
+	private TicketDAO ticketDAO = new TicketDAOImplJDBC();
+	private WindowDAO windowDAO = new WindowDAOImplJDBC();
+
+	public ServerMonitor(DatagramSocket ds) {
+		this.ds = ds;
+	}
+
+	@Override
+	public void run() {
+		System.out.println("服务器端已经启动，监听在:" + NetConstant.SERVER_PORT
+				+ "端口上......");
+		while (true) {
+			// 接收一个消息
+			DatagramPacket dp = com.teamfirst.util.net.NetUtil
+					.recevice(this.ds);
+
+			InetAddress clientIp = dp.getAddress();
+			int clientPort = dp.getPort();
+
+			// 将消息转换成为对象
+			RequestMsg<?> requestMsg = (RequestMsg<?>) NetUtil.conversObj(dp);
+			// 进行判断，选择业务流程来处理
+
+			this.doIt(requestMsg, clientIp, clientPort);
+
+		}
+
+	}
+
+	private void doIt(RequestMsg<?> requestMsg, InetAddress clientIp,
+			int clientPort) {
+		switch (requestMsg.getRequest()) {
+
+		case NetConstant.CALLER_LOGIN: {
+			String account = (String) requestMsg.getObj();
+			Caller caller = this.callerDAO.queryByAccount(account);
+			// 发回处理结果给客户端
+			ResponseMsg<Caller> responseMsg = new ResponseMsg<Caller>();
+			responseMsg.setObj(caller);
+			responseMsg.setResponse(NetConstant.RESULT_CALLER_LOGIN);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		case NetConstant.QUERY_BY_BUSINESS_ID: {
+
+			Integer businessId = (Integer) requestMsg.getObj();
+
+			Ticket ticket = this.ticketDAO.queryByBusinessId(businessId);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Ticket> responseMsg = new ResponseMsg<Ticket>();
+			responseMsg.setObj(ticket);
+			responseMsg.setResponse(NetConstant.RESULT_QUERY_BY_BUSINESS_ID);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		case NetConstant.INSERT_TICKET: {
+
+			Ticket ticket = (Ticket) requestMsg.getObj();
+
+			Integer row = this.ticketDAO.insertTicket(ticket);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg.setResponse(NetConstant.RESULT_INSERT_TICKET);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		case NetConstant.BUSINESSDAO_INSERT_BUSINESS: {
+
+			Business business = (Business) requestMsg.getObj();
+			Integer row = businessDAO.insertBusiness(business);
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg
+					.setResponse(NetConstant.RESULT_BUSINESSDAO_INSERT_BUSINESS);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		case NetConstant.BUSINESSDAO_UPDATE_BUSINESS_BY_CODE: {
+
+			Business business = (Business) requestMsg.getObj();
+
+			Integer row = businessDAO.updateDisabledByCode(business);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg
+					.setResponse(NetConstant.RESULT_BUSINESSDAO_UPDATE_BUSINESS_BY_CODE);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		case NetConstant.BUSINESSDAO_UPDATE_BUSINESS_BY_NAME: {
+
+			Business business = (Business) requestMsg.getObj();
+
+			Integer row = businessDAO.updateDisabledByName(business);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg
+					.setResponse(NetConstant.RESULT_BUSINESSDAO_UPDATE_BUSINESS_BY_NAME);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		case NetConstant.UPDATE_BUSINESSDAO_BUSINESS_BY_ID: {
+
+			Business business = (Business) requestMsg.getObj();
+
+			Integer row = businessDAO.updateBusinessById(business);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg
+					.setResponse(NetConstant.RESULT_BUSINESSDAO_UPDATE_BUSINESS_BY_ID);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		case NetConstant.BUSINESSDAO_QUERY_BY_CODE: {
+
+			String code = (String) requestMsg.getObj();
+
+			Business business = businessDAO.queryByCode(code);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Business> responseMsg = new ResponseMsg<Business>();
+			responseMsg.setObj(business);
+			responseMsg
+					.setResponse(NetConstant.RESULT_BUSINESSDAO_QUERY_BY_CODE);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		case NetConstant.BUSINESSDAO_QUERY_BY_NAME: {
+
+			String name = (String) requestMsg.getObj();
+
+			Business business = businessDAO.queryByName(name);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Business> responseMsg = new ResponseMsg<Business>();
+			responseMsg.setObj(business);
+			responseMsg
+					.setResponse(NetConstant.RESULT_BUSINESSDAO_QUERY_BY_CODE);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		case NetConstant.BUSINESSDAO_QUERY_ALL: {
+
+			// String name = (String) requestMsg.getObj();
+
+			List<Business> business = businessDAO.queryAll();
+
+			// 发回处理结果给客户端
+			ResponseMsg<List<Business>> responseMsg = new ResponseMsg<List<Business>>();
+			responseMsg.setObj(business);
+			responseMsg.setResponse(NetConstant.RESULT_BUSINESSDAO_QUERY_ALL);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		// *******************************************
+		case NetConstant.MANAGERDAO_INSERT_MANAGER: {
+
+			Manager manager = (Manager) requestMsg.getObj();
+
+			Integer row = this.managerDAO.insertManager(manager);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg.setResponse(NetConstant.RESULT_INSERT_TICKET);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		// *******************************************
+		case NetConstant.MANAGERDAO_DELETE_MANAGER_BY_ACCOUNT: {
+
+			String account = (String) requestMsg.getObj();
+
+			Integer row = this.managerDAO.deleteManagerByAccount(account);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg
+					.setResponse(NetConstant.RESULT_MANAGERDAO_DELETE_MANAGER_BY_ACCOUNT);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		// ********************************************
+		case NetConstant.MANAGERDAO_DELETE_MANAGER_BY_NAME: {
+
+			String name = (String) requestMsg.getObj();
+
+			Integer row = this.managerDAO.deleteManagerByName(name);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg
+					.setResponse(NetConstant.RESULT_MANAGERDAO_DELETE_MANAGER_BY_NAME);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		// ********************************************
+		case NetConstant.MANAGERDAO_UPDATE_PASSWORD_BY_ACCOUNT: {
+
+			Manager manager = (Manager) requestMsg.getObj();
+
+			Integer row = this.managerDAO.updatePasswordByAccount(manager);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg
+					.setResponse(NetConstant.RESULT_MANAGERDAO_UPDATE_PASSWORD_BY_ACCOUNT);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.MANAGERDAO_QUERY_BY_ACCOUNT: {
+
+			String account = (String) requestMsg.getObj();
+
+			Manager manager = this.managerDAO.queryByAccount(account);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Manager> responseMsg = new ResponseMsg<Manager>();
+			responseMsg.setObj(manager);
+			responseMsg
+					.setResponse(NetConstant.RESULT_MANAGERDAO_QUERY_BY_ACCOUNT);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		// ********************************************
+		case NetConstant.MANAGERDAO_QUERY_BY_NAME: {
+
+			String name = (String) requestMsg.getObj();
+
+			Manager manager = this.managerDAO.queryByName(name);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Manager> responseMsg = new ResponseMsg<Manager>();
+			responseMsg.setObj(manager);
+			responseMsg
+					.setResponse(NetConstant.RESULT_MANAGERDAO_QUERY_BY_NAME);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		// ********************************************
+		case NetConstant.MANAGERDAO_QUERY_ALL: {
+
+			// String name = (String) requestMsg.getObj();
+
+			// Manager manager = this.managerDAO.queryByName(name);
+			List<Manager> list = this.managerDAO.queryAll();
+
+			// 发回处理结果给客户端
+			ResponseMsg<List<Manager>> responseMsg = new ResponseMsg<List<Manager>>();
+			responseMsg.setObj(list);
+			responseMsg.setResponse(NetConstant.RESULT_MANAGERDAO_QUERY_ALL);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		// ********************************************
+		case NetConstant.MANAGERDAO_UPDATE_DISABLED_BY_ACCOUNT: {
+
+			Manager manager = (Manager) requestMsg.getObj();
+
+			Integer row = this.managerDAO.updateDisabledByaccount(manager);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg
+					.setResponse(NetConstant.RESULT_MANAGERDAO_UPDATE_DISABLED_BY_ACCOUNT);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		// ********************************************
+		case NetConstant.TICKETDAO_INSERT_TICKET: {
+
+			Ticket ticket = (Ticket) requestMsg.getObj();
+
+			Integer row = this.ticketDAO.insertTicket(ticket);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg.setResponse(NetConstant.RESULT_TICKETDAO_INSERT_TICKET);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		// ********************************************
+		case NetConstant.TICKETDAO_UPDATE_BY_ID: {
+
+			Ticket ticket = (Ticket) requestMsg.getObj();
+
+			Integer row = this.ticketDAO.updateById(ticket);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Integer> responseMsg = new ResponseMsg<Integer>();
+			responseMsg.setObj(row);
+			responseMsg.setResponse(NetConstant.RESULT_TICKETDAO_UPDATE_BY_ID);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_BY_DATE: {
+
+			Date date = (Date) requestMsg.getObj();
+
+			Ticket ticket = this.ticketDAO.queryByDate(date);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Ticket> responseMsg = new ResponseMsg<Ticket>();
+			responseMsg.setObj(ticket);
+			responseMsg.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_BY_DATE);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_BY_ID: {
+
+			Integer id = (Integer) requestMsg.getObj();
+
+			Ticket ticket = this.ticketDAO.queryById(id);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Ticket> responseMsg = new ResponseMsg<Ticket>();
+			responseMsg.setObj(ticket);
+			responseMsg.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_BY_ID);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_BY_BUSINESS_ID: {
+
+			Integer businessId = (Integer) requestMsg.getObj();
+
+			Ticket ticket = this.ticketDAO.queryByBusinessId(businessId);
+
+			// 发回处理结果给客户端
+			ResponseMsg<Ticket> responseMsg = new ResponseMsg<Ticket>();
+			responseMsg.setObj(ticket);
+			responseMsg
+					.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_BY_BUSINESS_ID);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_ALL: {
+
+			// Integer businessId = (Integer) requestMsg.getObj();
+
+			List<Ticket> list = this.ticketDAO.queryAll();
+
+			// 发回处理结果给客户端
+			ResponseMsg<List<Ticket>> responseMsg = new ResponseMsg<List<Ticket>>();
+			responseMsg.setObj(list);
+			responseMsg.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_ALL);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_TICKETS_BY_BUSINESS_ID: {
+
+			Integer id = (Integer) requestMsg.getObj();
+
+			List<Ticket> list = this.ticketDAO.queryTicketsByBusinessId(id);
+
+			// 发回处理结果给客户端
+			ResponseMsg<List<Ticket>> responseMsg = new ResponseMsg<List<Ticket>>();
+			responseMsg.setObj(list);
+			responseMsg.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_ALL);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_LOG_BY_TICKETVO: {
+
+			// Integer id = (Integer) requestMsg.getObj();
+
+			List<TicketVO> list = this.ticketDAO.queryLogByTicketVO();
+
+			// 发回处理结果给客户端
+			ResponseMsg<List<TicketVO>> responseMsg = new ResponseMsg<List<TicketVO>>();
+			responseMsg.setObj(list);
+			responseMsg
+					.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_LOG_BY_TICKETVO);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO: {
+
+			// Integer id = (Integer) requestMsg.getObj();
+
+			List<Ticket_Caller_Business_VO> list = this.ticketDAO
+					.queryDataByTicket_Caller_Business_VO();
+
+			// 发回处理结果给客户端
+			ResponseMsg<List<Ticket_Caller_Business_VO>> responseMsg = new ResponseMsg<List<Ticket_Caller_Business_VO>>();
+			responseMsg.setObj(list);
+			responseMsg
+					.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO1: {
+
+			// Integer id = (Integer) requestMsg.getObj();
+
+			List<Ticket_TakeDate_VO> list = this.ticketDAO
+					.queryDataByTicket_Caller_Business_VO1();
+
+			// 发回处理结果给客户端
+			ResponseMsg<List<Ticket_TakeDate_VO>> responseMsg = new ResponseMsg<List<Ticket_TakeDate_VO>>();
+			responseMsg.setObj(list);
+			responseMsg
+					.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO1);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO2: {
+
+			// Integer id = (Integer) requestMsg.getObj();
+
+			List<Ticket_Caller_Business_VO> list = this.ticketDAO
+					.queryDataByTicket_Caller_Business_VO2();
+
+			// 发回处理结果给客户端
+			ResponseMsg<List<Ticket_Caller_Business_VO>> responseMsg = new ResponseMsg<List<Ticket_Caller_Business_VO>>();
+			responseMsg.setObj(list);
+			responseMsg
+					.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_DATA_BY_TICKET_CALLER_BUSINESS_VO2);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_DATA_BY_TICKETVO: {
+
+			// Integer id = (Integer) requestMsg.getObj();
+
+			List<TicketVO> list = this.ticketDAO.queryDataByTicketVO();
+
+			// 发回处理结果给客户端
+			ResponseMsg<List<TicketVO>> responseMsg = new ResponseMsg<List<TicketVO>>();
+			responseMsg.setObj(list);
+			responseMsg
+					.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_DATA_BY_TICKETVO);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_CHECK_BY_TICKETVO: {
+
+			// Integer id = (Integer) requestMsg.getObj();
+
+			List<TicketVO> list = this.ticketDAO.queryCheckByTicketVO();
+
+			// 发回处理结果给客户端
+			ResponseMsg<List<TicketVO>> responseMsg = new ResponseMsg<List<TicketVO>>();
+			responseMsg.setObj(list);
+			responseMsg
+					.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_CHECK_BY_TICKETVO);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+		// ********************************************
+		case NetConstant.TICKETDAO_QUERY_SUCCESS_BY_TICKETVO: {
+
+			Integer success = (Integer) requestMsg.getObj();
+
+			List<TicketVO> list = this.ticketDAO
+					.querySuccessByTicketVO(success);
+
+			// 发回处理结果给客户端
+			ResponseMsg<List<TicketVO>> responseMsg = new ResponseMsg<List<TicketVO>>();
+			responseMsg.setObj(list);
+			responseMsg
+					.setResponse(NetConstant.RESULT_TICKETDAO_QUERY_SUCCESS_BY_TICKETVO);
+			NetUtil.send(this.ds, responseMsg, clientIp, clientPort);
+
+			break;
+		}
+
+		default:
+			break;
+		}
+
+	}
+
+}

@@ -1,0 +1,22 @@
+package com.taketicket.constant;
+
+public class MyConstant {
+
+	public static final String VIP_NAME = "VIP业务";
+	public static final String COMMOM_NAME = "普通业务";
+	public static final String PUBLIC_NAME = "对公业务";
+
+	public static final int VIP_OF_WINDOW = 1;
+	public static final int COMMOM_OF_WINDOW = 2;
+	public static final int PUBLIC_OF_WINDOW = 3;
+
+	public static final int DISABLED = 0;
+	public static final int ABLE = 1;
+
+	public static final int IS_CALLED = 1;
+	public static final int IS_NOT_CALLED = 0;
+
+	public static final int SUCCESS = 1;
+	public static final int FAIL = 0;
+
+}
